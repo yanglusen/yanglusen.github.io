@@ -6,19 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives | Yangls的博客</title>
+  <title>原生JS实现拖拽功能 | Yangls的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="不入流学校计算机科学与技术专业，爱生活，爱编程，此博客一枚。">
-<meta name="keywords" content="前端,angular8,typescript,java,编程,程序猿">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Yangls的博客">
-<meta property="og:url" content="http://yoursite.com/archives/index.html">
+  <meta name="description" content="最近两个项目中都有实现元素拖拽的功能，网上的例子也是千篇一律，利用这难得的周天休息时间，整理记录一下利用原生js实现拖拽功能的思路。">
+<meta name="keywords" content="javascript,拖拽功能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="原生JS实现拖拽功能">
+<meta property="og:url" content="http://yoursite.com/2020/12/13/原生JS实现拖拽功能/index.html">
 <meta property="og:site_name" content="Yangls的博客">
-<meta property="og:description" content="不入流学校计算机科学与技术专业，爱生活，爱编程，此博客一枚。">
+<meta property="og:description" content="最近两个项目中都有实现元素拖拽的功能，网上的例子也是千篇一律，利用这难得的周天休息时间，整理记录一下利用原生js实现拖拽功能的思路。">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-12-13T14:33:44.781Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Yangls的博客">
-<meta name="twitter:description" content="不入流学校计算机科学与技术专业，爱生活，爱编程，此博客一枚。">
+<meta name="twitter:title" content="原生JS实现拖拽功能">
+<meta name="twitter:description" content="最近两个项目中都有实现元素拖拽的功能，网上的例子也是千篇一律，利用这难得的周天休息时间，整理记录一下利用原生js实现拖拽功能的思路。">
   
     <link rel="alternative" href="/atom.xml" title="Yangls的博客" type="application/atom+xml">
   
@@ -144,36 +145,109 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-原生JS实现拖拽功能" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/12/13/原生JS实现拖拽功能/" class="archive-article-date">
-  	<time datetime="2020-12-13T12:08:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-12-13</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/12/13/原生JS实现拖拽功能/">原生JS实现拖拽功能</a>
+    <h1 class="article-title" itemprop="name">
+      原生JS实现拖拽功能
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2020/12/13/原生JS实现拖拽功能/" class="archive-article-date">
+  	<time datetime="2020-12-13T12:08:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-12-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近两个项目中都有实现元素拖拽的功能，网上的例子也是千篇一律，利用这难得的周天休息时间，整理记录一下利用原生js实现拖拽功能的思路。</p>
+<a id="more"></a>
+
+<p>写代码就像是解数学题，一定有清晰的思路再去做。所以下面先来捋清楚实现元素拖动的思路再去写代码：</p>
+<p>简单来说需求无非就是当去按下鼠标时，才能开始移动元素，鼠标松开后停止移动，元素的位置改变。这里涉及到了鼠标点击的三个事件：鼠标按下事件（mousedown事件）、鼠标移动事件（mousemove事件）、鼠标抬起事件（mouseup事件），具体思路如下：</p>
+<ol>
+<li><p>首先实现拖拽的元素一定是脱离文档流的元素（什么是文档流，请参考此篇文章:<a href="https://www.cnblogs.com/ning123/p/11011845.html" target="_blank">HTML元素脱离文档流的三种方法</a>）</p>
+</li>
+<li><p>鼠标按下事件（mousedown),计算出鼠标按下时的坐标点到元素div最左侧的距离，因为无论怎么移动，这段距离始终是不变的。</p>
+</li>
+<li><p>鼠标移动时（mousemove),通过事件对象，可以实时获得鼠标按下点到浏览器左边的距离,然後再减去鼠标按下点到元素最左侧的距离就是元素div最左侧到浏览器左侧的距离。</p>
+</li>
+<li><p>鼠标抬起时，停止拖动。</p>
+</li>
+</ol>
+<p>下面看代码示例：</p>
+<p>HTML:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class=&quot;box&quot; style=&quot;position:fixed;left:0;top:0&quot;&gt;div内容&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+
+<p>CSS：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.box &#123;</span><br><span class="line">    // 表示盒子可拖动</span><br><span class="line">    cursor: move</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>JavaScript：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">// 获取元素</span><br><span class="line">let box = document.getElementsByClassName(&quot;cesiumxin&quot;)[0];</span><br><span class="line">// 鼠标相对与div左边，上边的偏移</span><br><span class="line">let x, y; </span><br><span class="line">// 移动状态的判断鼠标按下才能移动</span><br><span class="line">let isDrop = false; </span><br><span class="line">// 鼠标按下事件</span><br><span class="line">box.onmousedown = function(e) &#123;</span><br><span class="line">    //要用event这个对象来获取鼠标的位置</span><br><span class="line">    let e = e || window.event; </span><br><span class="line">    // div盒子距离浏览器左边的距离</span><br><span class="line">    let left = box.style.left;</span><br><span class="line">    // div盒子距离浏览器上方的距离</span><br><span class="line">    let top = box.style.top;</span><br><span class="line">    // 获取鼠标点击的位置与div盒子最外侧的相对距离,两种写法</span><br><span class="line">    // x = e.clientX - box.offsetLeft;</span><br><span class="line">    x = e.clientX - parseInt(left);</span><br><span class="line">    // y = e.clientY - box.offsetTop;</span><br><span class="line">    y = e.clientY - parseInt(top);</span><br><span class="line">    //设为true表示可以移动</span><br><span class="line">    isDrop = true; </span><br><span class="line">&#125;</span><br><span class="line">// 鼠标移动事件</span><br><span class="line">document.onmousemove = function(e) &#123;</span><br><span class="line">    // 是否为可移动状态                　　　　　　　　　　　 　　</span><br><span class="line">    if(isDrop) &#123;　　　　</span><br><span class="line">        let e = e || window.event;</span><br><span class="line">        // 得到div距离左边移动距离                  　　</span><br><span class="line">        let moveX = e.clientX - x;</span><br><span class="line">        // 得到距离上边移动距离                    　　</span><br><span class="line">        let moveY = e.clientY - y;</span><br><span class="line">        // 计算盒子可移动最大距离</span><br><span class="line">        let maxX = document.documentElement.clientWidth - box.offsetWidth;</span><br><span class="line">        let maxY = document.documentElement.clientHeight - box.offsetHeight;</span><br><span class="line">        //范围限定  当移动的距离最小时取最大  移动的距离最大时取最小</span><br><span class="line">        //范围限定方法一</span><br><span class="line">        /*if(moveX &lt; 0) &#123;</span><br><span class="line">            // 表示盒子超过了左边边界</span><br><span class="line">            moveX = 0</span><br><span class="line">        &#125; else if(moveX &gt; maxX) &#123;</span><br><span class="line">            // 表示盒子超过了右边边界</span><br><span class="line">                moveX = maxX;</span><br><span class="line">            &#125;</span><br><span class="line">        if(moveY &lt; 0) &#123;</span><br><span class="line">            // 表示盒子超过了上边边界</span><br><span class="line">            moveY = 0;</span><br><span class="line">        &#125; else if(moveY &gt; maxY) &#123;</span><br><span class="line">            // 表示盒子超过了下边界</span><br><span class="line">            moveY = maxY;</span><br><span class="line">            &#125;　*/</span><br><span class="line">        //范围限定方法二　</span><br><span class="line">        moveX=Math.min(maxX, Math.max(0,moveX));            </span><br><span class="line">        moveY=Math.min(maxY, Math.max(0,moveY));</span><br><span class="line">        box.style.left = moveX + &quot;px&quot;;　　</span><br><span class="line">        box.style.top = moveY + &quot;px&quot;;　　　　　　　　　　</span><br><span class="line">     &#125; else &#123;</span><br><span class="line">         return;　　　　　　　　　　</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">document.onmouseup = function() &#123;</span><br><span class="line">    //设置为false不可移动</span><br><span class="line">    isDrop = false; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>至此实现div盒子的拖动功能，但是深究其代码，需要有几处需要注意的地方：</p>
+<ol>
+<li><p>有两种方式可以取到盒子div左侧距离浏览器左侧的距离：box.style.left 和 box.offsetLeft,有没有思考过这两种方式的区别呢？这里在计算鼠标点击点到盒子div左侧的相对距离时，我还是推荐使用box.offsetLeft的方式，假如此demo中我把css代码中的“left:0; top: 0;”属性去掉，则此程序执行失败，原因是上述代码：</p>
+<p> // div盒子距离浏览器左边的距离</p>
+<p> let left = box.style.left;</p>
+<p> // div盒子距离浏览器上方的距离</p>
+<p> let top = box.style.top;</p>
+<p> 取到的值都是空，然后后续进行相减计算的时候程序会报错。又或者不用类型转换 parseInt(left),parseInt(top)此程序也会报错，因为这里取到的left和top都是字符串类型。</p>
+<p> 下面是元素的left属性和offsetLeft属性的区别：</p>
+<p> 1). 定义了position：relative 的元素 或者 position：absolute 的元素 才有left属性，而每个元素都有offsetLeft属性；</p>
+<p> 2). offsetLeft属性的值是相对于父容器而言的，left属性的值是相对于浏览器而言的。</p>
+<p> 3). offsetLeft的值是number类型，而left的属性的值返回的字符串类型，如’29px’</p>
+<p> 4). offsetLeft属性是只读类型，而left属性是可读可写的。</p>
+<p> 5). style属性的值是需要事先定义的，而且必须定义在HTML中，如果定义在css中，那么style.left的值还是为空，但是可以通过offsetLeft取到值。</p>
+</li>
+<li><p>这里涉及到了JavaScript中的各种属性长度和宽度，详细的传送门：<br><a href="https://blog.csdn.net/qq_33036599/article/details/81224346" target="_blank">javascript中的offsetWidth、clientWidth、innerWidth及相关属性方法</a></p>
+</li>
+</ol>
+<p>多思考，多实践！</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/img/alipay.jpg">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/img/weixin.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -189,410 +263,118 @@
 		</ul>
 	</div>
 
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/11/08/js数组根据对象属性去重/" class="archive-article-date">
-  	<time datetime="2020-11-08T08:03:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-08</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/11/08/js数组根据对象属性去重/">js数组根据对象属性去重</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">数组</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">去重</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/11/04/session和token的区别/" class="archive-article-date">
-  	<time datetime="2020-11-04T14:49:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-04</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/11/04/session和token的区别/">session和token的区别</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">session</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">token</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/11/01/JS中的SessionStorage和localStorage/" class="archive-article-date">
-  	<time datetime="2020-11-01T12:00:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-01</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/11/01/JS中的SessionStorage和localStorage/">JS中的SessionStorage和localStorage</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">javascript</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">本地存储</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/09/01/2020年上半年总结/" class="archive-article-date">
-  	<time datetime="2020-09-01T13:16:17.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-09-01</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/09/01/2020年上半年总结/">2020年上半年总结</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">杂谈</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/06/20/javaScript中的正则表达式/" class="archive-article-date">
-  	<time datetime="2020-06-20T07:08:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-20</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/06/20/javaScript中的正则表达式/">javaScript中的正则表达式</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">javascript</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">正则表达式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
       
-        </div></section>
+
       
+
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/24/Java中遍历Map对象的方法/" class="archive-article-date">
-  	<time datetime="2019-11-24T14:01:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-24</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/24/Java中遍历Map对象的方法/">Java中遍历Map对象的方法</a>
-    </h1>
-  
+      </div>
+    </span>
+  </div>
+</div>
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/12/13/原生JS实现拖拽功能/" alt="微信分享二维码">
+    </div>
+</div>
 
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/06/Linux下Oracle12c常用管理命令/" class="archive-article-date">
-  	<time datetime="2019-11-06T13:35:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-06</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2020/11/08/js数组根据对象属性去重/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">js数组根据对象属性去重</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/06/Linux下Oracle12c常用管理命令/">Linux下Oracle12c常用管理命令</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Oracle 12c</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    目录，不存在的…
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+        
+    </div>
+</aside>
+
+
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/10/14/hexo-yilia-gitpages/" class="archive-article-date">
-  	<time datetime="2019-10-14T12:09:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-14</time>
-</a>
-        </div>
-    	 
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/10/14/hexo-yilia-gitpages/">hexo+yilia+gitpages搭建个人博客</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Hexo</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">yilia</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GitPages</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">博客</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/10/13/Angular8/" class="archive-article-date">
-  	<time datetime="2019-10-13T15:20:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-13</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/10/13/Angular8/">Angular8</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">angular8</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">typescript</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><a class="extend next" rel="next" href="/archives/page/2/">Next &raquo;</a>
-    </nav>
   
 
 
@@ -616,8 +398,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
