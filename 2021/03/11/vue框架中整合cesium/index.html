@@ -8,21 +8,21 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>vue框架中整合cesium | Yangls的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="这半年陆续做了两个关于WebGis的项目，其项目架构都是基于Vue和Cesium的，由于Cesium是用的别人二次封装的框架，所以也没有太大的提升基于此，所以工作之余自己手动写了个Cesium的demo以供学习Cesium和Vue的知识，毕竟技多不压身嘛~下面是在vue框架中整合Cesium的具体过程.">
+  <meta name="description" content="这半年陆续做了两个关于WebGis的项目，其项目架构都是基于Vue和Cesium的，由于Cesium是用的别人二次封装的框架，所以也没有太大的提升，基于此，所以工作之余自己手动写了个Cesium的demo以供学习Cesium和Vue的知识，毕竟技多不压身嘛~下面是在vue框架中整合Cesium的具体过程.">
 <meta name="keywords" content="cesium,vue">
 <meta property="og:type" content="article">
 <meta property="og:title" content="vue框架中整合cesium">
 <meta property="og:url" content="http://yoursite.com/2021/03/11/vue框架中整合cesium/index.html">
 <meta property="og:site_name" content="Yangls的博客">
-<meta property="og:description" content="这半年陆续做了两个关于WebGis的项目，其项目架构都是基于Vue和Cesium的，由于Cesium是用的别人二次封装的框架，所以也没有太大的提升基于此，所以工作之余自己手动写了个Cesium的demo以供学习Cesium和Vue的知识，毕竟技多不压身嘛~下面是在vue框架中整合Cesium的具体过程.">
+<meta property="og:description" content="这半年陆续做了两个关于WebGis的项目，其项目架构都是基于Vue和Cesium的，由于Cesium是用的别人二次封装的框架，所以也没有太大的提升，基于此，所以工作之余自己手动写了个Cesium的demo以供学习Cesium和Vue的知识，毕竟技多不压身嘛~下面是在vue框架中整合Cesium的具体过程.">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2021/03/11/vue框架中整合cesium/1.png">
 <meta property="og:image" content="http://yoursite.com/2021/03/11/vue框架中整合cesium/2.png">
 <meta property="og:image" content="http://yoursite.com/2021/03/11/vue框架中整合cesium/3.png">
-<meta property="og:updated_time" content="2021-03-11T23:55:47.183Z">
+<meta property="og:updated_time" content="2021-03-11T23:58:10.861Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="vue框架中整合cesium">
-<meta name="twitter:description" content="这半年陆续做了两个关于WebGis的项目，其项目架构都是基于Vue和Cesium的，由于Cesium是用的别人二次封装的框架，所以也没有太大的提升基于此，所以工作之余自己手动写了个Cesium的demo以供学习Cesium和Vue的知识，毕竟技多不压身嘛~下面是在vue框架中整合Cesium的具体过程.">
+<meta name="twitter:description" content="这半年陆续做了两个关于WebGis的项目，其项目架构都是基于Vue和Cesium的，由于Cesium是用的别人二次封装的框架，所以也没有太大的提升，基于此，所以工作之余自己手动写了个Cesium的demo以供学习Cesium和Vue的知识，毕竟技多不压身嘛~下面是在vue框架中整合Cesium的具体过程.">
 <meta name="twitter:image" content="http://yoursite.com/2021/03/11/vue框架中整合cesium/1.png">
   
     <link rel="alternative" href="/atom.xml" title="Yangls的博客" type="application/atom+xml">
@@ -169,7 +169,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>这半年陆续做了两个关于WebGis的项目，其项目架构都是基于Vue和Cesium的，由于Cesium是用的别人二次封装的框架，所以也没有太大的提升<br>基于此，所以工作之余自己手动写了个Cesium的demo以供学习Cesium和Vue的知识，毕竟技多不压身嘛~下面是在vue框架中整合Cesium的具体过程.</p>
+        <p>这半年陆续做了两个关于WebGis的项目，其项目架构都是基于Vue和Cesium的，由于Cesium是用的别人二次封装的框架，所以也没有太大的提升，基于此，所以工作之余自己手动写了个Cesium的demo以供学习Cesium和Vue的知识，毕竟技多不压身嘛~下面是在vue框架中整合Cesium的具体过程.</p>
 <a id="more"></a>
 
 <p>这里是采用npm方式来集成的cesium，环境是：cesium1.79.1、Vue Cli3</p>
@@ -440,15 +440,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">杂谈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">angular8</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">typescript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">杂谈</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -488,15 +488,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">拖拽功能</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">session</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">token</a>
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -508,7 +500,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+                <a href="javascript:void(0)" class="js-tag color3">session</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">token</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -517,6 +513,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">拖拽功能</a>
               </li>
             
             <div class="clearfix"></div>
