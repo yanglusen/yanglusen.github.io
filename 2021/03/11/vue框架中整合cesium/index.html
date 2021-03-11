@@ -6,20 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Angular8 | Yangls的博客</title>
+  <title>vue框架中整合cesium | Yangls的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Angular简介 它是属于谷歌的一款开源的web前端框架，诞生与2009年，是一款优秀的前端js框架，angular是基于TypeScript的,目前2019年10月23日最新版本为angular8。">
-<meta name="keywords" content="angular8,typescript">
+  <meta name="description" content="这半年陆续做了两个关于WebGis的项目，其项目架构都是基于Vue和Cesium的，由于Cesium是用的别人二次封装的框架，所以也没有太大的提升基于此，所以工作之余自己手动写了个Cesium的demo以供学习Cesium和Vue的知识，毕竟技多不压身嘛~下面是在vue框架中整合Cesium的具体过程.">
+<meta name="keywords" content="cesium,vue">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Angular8">
-<meta property="og:url" content="http://yoursite.com/2019/10/13/Angular8/index.html">
+<meta property="og:title" content="vue框架中整合cesium">
+<meta property="og:url" content="http://yoursite.com/2021/03/11/vue框架中整合cesium/index.html">
 <meta property="og:site_name" content="Yangls的博客">
-<meta property="og:description" content="Angular简介 它是属于谷歌的一款开源的web前端框架，诞生与2009年，是一款优秀的前端js框架，angular是基于TypeScript的,目前2019年10月23日最新版本为angular8。">
+<meta property="og:description" content="这半年陆续做了两个关于WebGis的项目，其项目架构都是基于Vue和Cesium的，由于Cesium是用的别人二次封装的框架，所以也没有太大的提升基于此，所以工作之余自己手动写了个Cesium的demo以供学习Cesium和Vue的知识，毕竟技多不压身嘛~下面是在vue框架中整合Cesium的具体过程.">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-11-06T12:54:47.217Z">
+<meta property="og:image" content="http://yoursite.com/2021/03/11/vue框架中整合cesium/1.png">
+<meta property="og:image" content="http://yoursite.com/2021/03/11/vue框架中整合cesium/2.png">
+<meta property="og:image" content="http://yoursite.com/2021/03/11/vue框架中整合cesium/3.png">
+<meta property="og:updated_time" content="2021-03-11T23:55:47.183Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Angular8">
-<meta name="twitter:description" content="Angular简介 它是属于谷歌的一款开源的web前端框架，诞生与2009年，是一款优秀的前端js框架，angular是基于TypeScript的,目前2019年10月23日最新版本为angular8。">
+<meta name="twitter:title" content="vue框架中整合cesium">
+<meta name="twitter:description" content="这半年陆续做了两个关于WebGis的项目，其项目架构都是基于Vue和Cesium的，由于Cesium是用的别人二次封装的框架，所以也没有太大的提升基于此，所以工作之余自己手动写了个Cesium的demo以供学习Cesium和Vue的知识，毕竟技多不压身嘛~下面是在vue框架中整合Cesium的具体过程.">
+<meta name="twitter:image" content="http://yoursite.com/2021/03/11/vue框架中整合cesium/1.png">
   
     <link rel="alternative" href="/atom.xml" title="Yangls的博客" type="application/atom+xml">
   
@@ -145,57 +149,46 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Angular8" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-vue框架中整合cesium" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      Angular8
+      vue框架中整合cesium
     </h1>
   
 
         
-        <a href="/2019/10/13/Angular8/" class="archive-article-date">
-  	<time datetime="2019-10-13T15:20:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-13</time>
+        <a href="/2021/03/11/vue框架中整合cesium/" class="archive-article-date">
+  	<time datetime="2021-03-11T15:02:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-03-11</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="Angular简介"><a href="#Angular简介" class="headerlink" title="Angular简介"></a>Angular简介</h2><blockquote>
-<p>它是属于谷歌的一款开源的web前端框架，诞生与2009年，是一款优秀的前端js框架，<br>angular是基于TypeScript的,目前2019年10月23日最新版本为angular8。</p>
-</blockquote>
+        <p>这半年陆续做了两个关于WebGis的项目，其项目架构都是基于Vue和Cesium的，由于Cesium是用的别人二次封装的框架，所以也没有太大的提升<br>基于此，所以工作之余自己手动写了个Cesium的demo以供学习Cesium和Vue的知识，毕竟技多不压身嘛~下面是在vue框架中整合Cesium的具体过程.</p>
 <a id="more"></a>
-<blockquote>
-<p>我们常说的 Angular 1 是指 AngularJS； 从Angular 2 开始已经改名了。不再带有JS，只是单纯的 Angular;Angular 1 是一个典型的 MVC 架构 （Model - View - Controller ）,相比于 Angular 1 的MVC 架构， Angular 2 是一个典型的基于组件（component) 架构。此外angularjs和angular2以后的版本语法完全不同，angularjs是基于JavaScript写的，而angular2以后的版本是基于typescript写的，TypeScript是JavaScript的一个超集。</p>
-</blockquote>
-<p>所以学习angular需要了解一下typescript的基础，相关资料，自行查阅。</p>
-<h2 id="Angular环境搭建、创建运行项目"><a href="#Angular环境搭建、创建运行项目" class="headerlink" title="Angular环境搭建、创建运行项目"></a>Angular环境搭建、创建运行项目</h2><h3 id="1-安装前准备工作"><a href="#1-安装前准备工作" class="headerlink" title="1.安装前准备工作"></a>1.安装前准备工作</h3><h4 id="1-安装nodejs"><a href="#1-安装nodejs" class="headerlink" title="(1)安装nodejs"></a>(1)安装nodejs</h4><p>去NodeJs官网去安装最新稳定版本的nodejs.</p>
-<p>默认安装完成后它会自动的配置环境变量，在cmd命令下输入：</p>
-<pre><code>C:\Users\Administrator&gt;node -v
-v12.6.0</code></pre><p>安装了nodejs以后，npm也会一起安装，输入以下命令：</p>
-<pre><code>C:\Users\Administrator&gt;npm -v
-6.9.0</code></pre><h4 id="2-安装cnpm"><a href="#2-安装cnpm" class="headerlink" title="(2)安装cnpm"></a>(2)安装cnpm</h4><blockquote>
-<p>用npm安装一些插件由于网络原因可能会失败，npm(node package manager)是node的官方的包管理器，而cnpm是中国版的npm,它们只是下载器不同，毕竟国内的网络相对快很多，所以推荐安装以下cnpm,用淘宝镜像安装：</p>
-</blockquote>
-<p><a href="http://npm.taobao.org/" target="_blank" rel="noopener">http://npm.taobao.org/</a></p>
-<p>在cmd下执行以下命令：</p>
-<pre><code>C:\Users\Administrator&gt;npm install -g cnpm --registry=https://registry.npm.taobao.org</code></pre><h4 id="3-使用npm-cnpm命令安装angular的脚手架-angular-cli-只需要安装一次"><a href="#3-使用npm-cnpm命令安装angular的脚手架-angular-cli-只需要安装一次" class="headerlink" title="(3)使用npm/cnpm命令安装angular的脚手架 angular/cli(只需要安装一次)"></a>(3)使用npm/cnpm命令安装angular的脚手架 angular/cli(只需要安装一次)</h4><pre><code>npm install -g @angular/cli</code></pre><p>或者：</p>
-<pre><code>cpm install -g @angular/cli</code></pre><p>到这儿，一个angular的环境就搭建起来了，下面就开始创建一个angular项目。</p>
-<h3 id="2-创建一个angular的项目"><a href="#2-创建一个angular的项目" class="headerlink" title="2.创建一个angular的项目"></a>2.创建一个angular的项目</h3><h4 id="1-创建工程文件夹"><a href="#1-创建工程文件夹" class="headerlink" title="(1)创建工程文件夹"></a>(1)创建工程文件夹</h4><p>在本地的硬盘上创建一个文件夹，我们的工程所有的目录将放在此文件夹下。</p>
-<h4 id="2-创建项目"><a href="#2-创建项目" class="headerlink" title="(2) 创建项目"></a>(2) 创建项目</h4><p>打开命令行工具先找到你创建的工程文件夹，然后使用以下命令创建项目：</p>
-<blockquote>
-<p>ng new 项目名称</p>
-</blockquote>
-<pre><code>ng new angularDemo</code></pre><p>如果只想创建项目，不先安装依赖，执行以下命令：</p>
-<pre><code>ng new angularDemo --skip-install</code></pre><h4 id="3-安装依赖"><a href="#3-安装依赖" class="headerlink" title="(3) 安装依赖"></a>(3) 安装依赖</h4><p>一个angular项目创建完成后会生成一个angular.json的文件，里面是运行一个angular项目所需要的依赖，可以用npm/cnpm命令去安装：</p>
-<pre><code>npm install</code></pre><p>或者</p>
-<pre><code>cnpm install  //推荐这种方式，下载比较快</code></pre><h4 id="4-运行项目"><a href="#4-运行项目" class="headerlink" title="(4) 运行项目"></a>(4) 运行项目</h4><p>在项目的根目录下执行以下命令：</p>
-<pre><code>ng serve --open</code></pre><p>上述命令是启动angular项目并且自动在浏览器中打开，如果不想它自动打开浏览器的话，去掉–open属性</p>
-<pre><code>ng serve</code></pre><p>在浏览器中输入<a href="http://localhost:4200" target="_blank" rel="noopener">http://localhost:4200</a>即可访问首页。</p>
+
+<p>这里是采用npm方式来集成的cesium，环境是：cesium1.79.1、Vue Cli3</p>
+<h4 id="安装cesium"><a href="#安装cesium" class="headerlink" title="安装cesium"></a>安装cesium</h4><p>执行命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install cesium --save</span><br></pre></td></tr></table></figure>
+
+<p>安装成功后查看package.json的dependencies 对象中会存在cesium的依赖<br><img src="/2021/03/11/vue框架中整合cesium/1.png" alt></p>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><p>这里需要讲下vue配置cesium需要注意的地方，因为cesium的包包含的东西很多，比如.js、.css以及一些图片<br>等资源，我们知道用webpack打包后的项目会把那些.js、.css文件统一压缩，那么问题来了，像cesium<br>包下的一些图片资源如果用webpack打包后，它不知道要把图片打到我们存放静态资源的文件夹下，所以<br>这时候需要我们手动配置把cesium包下的东西都打包到指定的目录。</p>
+<p>这里我们需要用到一个插件：copy-webpack-plugin,现在先来安装一下，安装的时候需要注意不要安装<br>最新版的，不然后面可能会出问题，在这里我安装的是4.0.1版本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install copy-webpack-plugin@4.0.1</span><br></pre></td></tr></table></figure>
+
+<p>插件安装好以后，先去main.js文件中引入全局的css样式，以及映射一下cesium的base路径：</p>
+<p><img src="/2021/03/11/vue框架中整合cesium/2.png" alt></p>
+<p>最后一步告诉webpack在打包的时候将cesium下的文件打包到指定目录：在vue.config.js文件中<br>配置，由于此demo是基于cli3搭建的，在vue cli3中vue.config.js文件是可选项，所以如果没有的<br>话手动创建一个。代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">const path = require(&apos;path&apos;)</span><br><span class="line">const cesiumPath = path.resolve(&apos;node_modules/cesium/Build/Cesium&apos;)</span><br><span class="line">// vue.config.js在vuecli3以后是一个可选的配置文件，如果项目的根目录中存在此文件，则会被@vue/cli-service自动加载</span><br><span class="line">module.exports = &#123;</span><br><span class="line">  // 部署应用包的基本路径</span><br><span class="line">  publicPath: &apos;/&apos;,</span><br><span class="line">  // 生产环境构建的目标</span><br><span class="line">  outputDir: &apos;dist&apos;,</span><br><span class="line">  // 放置打包生成的静态资源</span><br><span class="line">  assetsDir: &apos;&apos;,</span><br><span class="line">  // 指定生成的index.html的路径</span><br><span class="line">  indexPath: &apos;index.html&apos;,</span><br><span class="line">  // 默认情况下，生成的静态资源在它们的文件名中包含了 hash 以便更好的控制缓存</span><br><span class="line">  filenameHashing: true,</span><br><span class="line">  // 是否在开发环境下通过eslint-loader在每次保存时lint的代码，这个值会在@vue/cli-plugin-lint插件安装后生效</span><br><span class="line">  // Type: boolean | &apos;waring&apos; &apos;default&apos; | &apos;error&apos;,设置为&apos;waring&apos;|true时，eslint-load会将错误输出为警告，仅仅</span><br><span class="line">  // 会被输出到控制台，且不会编译失败， ’default&apos; | &apos;error&apos; 会编译失败</span><br><span class="line">  lintOnSave: &apos;warning&apos;,</span><br><span class="line">  // 第三方插件配置</span><br><span class="line">  chainWebpack: config =&gt; &#123;</span><br><span class="line">    config.plugin(&apos;copy&apos;).use(require(&apos;copy-webpack-plugin&apos;),</span><br><span class="line">      [[&#123;</span><br><span class="line">        from: cesiumPath,</span><br><span class="line">        to: &apos;./cesium&apos;</span><br><span class="line">      &#125;]])</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后配置完成以后就可以创建球了，此代码略，最终运行项目浏览器呈现：</p>
+<p><img src="/2021/03/11/vue框架中整合cesium/3.png" alt></p>
+<p>有问题欢迎交流指正！</p>
 
       
 
@@ -240,11 +233,11 @@ v12.6.0</code></pre><p>安装了nodejs以后，npm也会一起安装，输入以
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">angular8</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">cesium</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">typescript</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">vue</a>
         		</li>
       		
 		</ul>
@@ -300,7 +293,7 @@ v12.6.0</code></pre><p>安装了nodejs以后，npm也会一起安装，输入以
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/10/13/Angular8/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2021/03/11/vue框架中整合cesium/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -314,18 +307,9 @@ v12.6.0</code></pre><p>安装了nodejs以后，npm也会一起安装，输入以
   
 <nav id="article-nav">
   
-    <a href="/2019/10/14/hexo-yilia-gitpages/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          hexo+yilia+gitpages搭建个人博客
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/10/10/hello-life/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Hello Life</div>
+    <a href="/2020/12/13/原生JS实现拖拽功能/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">原生JS实现拖拽功能</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -352,7 +336,7 @@ v12.6.0</code></pre><p>安装了nodejs以后，npm也会一起安装，输入以
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Angular简介"><span class="toc-number">1.</span> <span class="toc-text">Angular简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Angular环境搭建、创建运行项目"><span class="toc-number">2.</span> <span class="toc-text">Angular环境搭建、创建运行项目</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-安装前准备工作"><span class="toc-number">2.1.</span> <span class="toc-text">1.安装前准备工作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-安装nodejs"><span class="toc-number">2.1.1.</span> <span class="toc-text">(1)安装nodejs</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-安装cnpm"><span class="toc-number">2.1.2.</span> <span class="toc-text">(2)安装cnpm</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-使用npm-cnpm命令安装angular的脚手架-angular-cli-只需要安装一次"><span class="toc-number">2.1.3.</span> <span class="toc-text">(3)使用npm/cnpm命令安装angular的脚手架 angular/cli(只需要安装一次)</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-创建一个angular的项目"><span class="toc-number">2.2.</span> <span class="toc-text">2.创建一个angular的项目</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-创建工程文件夹"><span class="toc-number">2.2.1.</span> <span class="toc-text">(1)创建工程文件夹</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-创建项目"><span class="toc-number">2.2.2.</span> <span class="toc-text">(2) 创建项目</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-安装依赖"><span class="toc-number">2.2.3.</span> <span class="toc-text">(3) 安装依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-运行项目"><span class="toc-number">2.2.4.</span> <span class="toc-text">(4) 运行项目</span></a></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#安装cesium"><span class="toc-number">1.</span> <span class="toc-text">安装cesium</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置"><span class="toc-number">2.</span> <span class="toc-text">配置</span></a></li></ol>
                     </div>
                 </span>
             </div>
