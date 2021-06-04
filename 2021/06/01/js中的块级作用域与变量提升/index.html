@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="Yangls的博客">
 <meta property="og:description" content="在ES5中只有全局作用域和函数作用域，没有块级作用域的概念，在ES6中新增了块级作用域的概念。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2021-06-02T14:07:52.901Z">
+<meta property="og:updated_time" content="2021-06-03T14:45:13.861Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="js中的块级作用域与变量提升">
 <meta name="twitter:description" content="在ES5中只有全局作用域和函数作用域，没有块级作用域的概念，在ES6中新增了块级作用域的概念。">
@@ -181,9 +181,9 @@
 <li>JavaScript函数是将语句组合在块中的经典例子。</li>
 </ul>
 <p>ES6在这个基础上引出来一个叫做“块级作用域”的概念，即 {} 中间的部分是一个块级作用域，for循环、if逻辑判断、while循环等语句也是块级作用域。</p>
-<h3 id="为什么要引入块级作用域"><a href="#为什么要引入块级作用域" class="headerlink" title="为什么要引入块级作用域"></a>为什么要引入块级作用域</h3><p>ES5中只有全局作用域和函数作用域，没有块级作用域的概念，这带来了很多不合理的场景：</p>
+<h3 id="为什么要引入块级作用域"><a href="#为什么要引入块级作用域" class="headerlink" title="为什么要引入块级作用域"></a>为什么要引入块级作用域</h3><p>-用来计数的循环变量泄露为全局变量</p>
+<p>ES5中只有全局作用域和函数作用域，没有块级作用域的概念，这带来了很多不合理的场景：</p>
 <p>-内层变量可能会覆盖外层变量。</p>
-<p>-用来计数的循环变量泄露为全局变量</p>
 <ol>
 <li>内层变量覆盖外层变量</li>
 </ol>
@@ -508,14 +508,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Oracle 12c</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
              
@@ -532,15 +524,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Oracle 12c</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">session</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">token</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -552,7 +544,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">拖拽功能</a>
+                <a href="javascript:void(0)" class="js-tag color3">session</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">token</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -561,6 +557,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">拖拽功能</a>
               </li>
              
               <li class="article-tag-list-item">
