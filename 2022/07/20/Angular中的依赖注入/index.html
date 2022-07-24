@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/inject/injector-injects.png">
 <meta property="article:published_time" content="2022-07-20T14:02:58.000Z">
-<meta property="article:modified_time" content="2022-07-22T02:09:32.968Z">
+<meta property="article:modified_time" content="2022-07-24T12:11:09.361Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="angular">
 <meta property="article:tag" content="依赖注入">
@@ -200,7 +200,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.7k 字
+      9.1k 字
     </span>
   
 
@@ -209,7 +209,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      23 分钟
+      76 分钟
     </span>
   
 
@@ -268,7 +268,8 @@
 <li><p>你可以为同一个依赖使用不同的提供者来配置这些注入器，这些提供者可以为同一个依赖提供不同的实现。</p>
 </li>
 </ul>
-<h2 id="怎么注入一个服务？"><a href="#怎么注入一个服务？" class="headerlink" title="怎么注入一个服务？"></a>怎么注入一个服务？</h2><p>上面👆介绍了，在 Angular 中服务就是一个带有 @Injectable() 装饰器的类，可以把它作为依赖，注入到组件中。同样，也要使用 @Injectable() 装饰器来表明一个组件或其它类（比如另一个服务、管道或 NgModule）拥有一个依赖，我们实际项目中绝大部分注入的依赖都是服务。</p>
+<h2 id="怎么注入一个依赖？"><a href="#怎么注入一个依赖？" class="headerlink" title="怎么注入一个依赖？"></a>怎么注入一个依赖？</h2><p>以最常用的服务为例，在组件中注入一个服务：</p>
+<p>上面👆介绍了，在 Angular 中服务就是一个带有 @Injectable() 装饰器的类，可以把它作为依赖，注入到组件中。同样，也要使用 @Injectable() 装饰器来表明一个组件或其它类（比如另一个服务、管道或 NgModule）拥有一个依赖，我们实际项目中绝大部分注入的依赖都是服务。</p>
 <ul>
 <li><p><strong>注入器</strong>是主要的机制。Angular 会在启动过程中为你创建全应用级注入器以及所需的其它注入器。你不用自己创建「注入器」。</p>
 </li>
@@ -288,7 +289,136 @@
 <p>当所有请求的服务已解析并返回时，Angular 可以用这些服务实例为参数，调用该组件的构造函数。</p>
 <p>注入过程可以用下方非常形象和经典的一张图来概括：</p>
 <p><img src="/img/inject/injector-injects.png" srcset="/img/loading.gif" lazyload></p>
-<p>个人理解：图中的Injector就是注入器，它管理着很多的依赖，Angular中「依赖项」和「DI令牌」相映射，「DI令牌」作为映射的key，「依赖项」作为映射的value，当发现构造函数中依赖HeroService时，注入器就会把HeroService当作「DI令牌」去注入器中去查找相应的「依赖项」，找到依赖项以后，然后再去查找该依赖有没有已经实例化好的对象，如果有就直接返回该对象，如果没有，注入器就会根据该依赖的「提供者」去创建对象，所以说对象是由注入器根据提供者创建的。「服务」的提供者默认就是 useClass，也就是注入器会通过 new 的方式创建一个对象，当然此外「提供者」可以是 useValue 或 useFactory等。</p>
+<p>个人理解：图中的Injector就是注入器，它管理着很多的依赖，Angular中「依赖项」和「DI令牌」相映射，「DI令牌」作为映射的key，「依赖项」作为映射的value，当发现构造函数中依赖HeroService时，注入器就会把HeroService当作「DI令牌」去注入器中去查找相应的「依赖项」，找到依赖项以后，然后再去查找该依赖有没有已经实例化好的对象，如果有就直接返回该对象，如果没有，注入器就会根据该依赖的「提供者」去创建对象，所以说对象是由注入器根据提供者创建的。「服务」的「提供者定义对象」默认就是 useClass，也就是说注入器会通过 new 的方式创建一个对象，此外「提供者定义对象」还可以是 useValue 、useExisting、useFactory等。</p>
+<h2 id="提供服务的三种方式"><a href="#提供服务的三种方式" class="headerlink" title="提供服务的三种方式"></a>提供服务的三种方式</h2><p>对于要用到的任何服务，你必须至少注册一个提供者。服务可以在自己的元数据中把自己注册为提供者，这样可以让自己随处可用。或者，你也可以为特定的模块或组件注册提供者。要注册提供者，就要在服务的 @Injectable() 装饰器中提供它的元数据，或者在 @NgModule() 或 @Component() 的元数据中。</p>
+<ol>
+<li>默认情况下，Angular CLI 的 ng generate service 命令会在 @Injectable() 装饰器中提供元数据来把它注册到根注入器中。本教程就用这种方法注册了 HeroService 的提供者：</li>
+</ol>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-keyword">@Injectable</span>(&#123;<br> providedIn: <span class="hljs-string">&#x27;root&#x27;</span>,<br>&#125;)<br></code></pre></td></tr></table></figure>
+
+<p>当你在根一级提供服务时，Angular 会为 HeroService 创建一个单一的共享实例，并且把它注入到任何想要它的类中。这种在 @Injectable 元数据中注册提供者的方式还让 Angular 能够通过移除那些从未被用过的服务来优化大小。</p>
+<ol start="2">
+<li>当你使用特定的 NgModule 注册提供者时，该服务的同一个实例将会对该 NgModule 中的所有组件可用。要想在这一层注册，请用 @NgModule() 装饰器中的 providers 属性：</li>
+</ol>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-keyword">@NgModule</span>(&#123;<br>  providers: [<br>  BackendService,<br>  Logger<br> ],<br> …<br>&#125;)<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>当你在组件级注册提供者时，你会为该组件的每一个新实例提供该服务的一个新实例。要在组件级注册，就要在 @Component() 元数据的 providers 属性中注册服务提供者。</li>
+</ol>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-variable">@Component</span>(&#123;<br>  <span class="hljs-attribute">selector</span>:    <span class="hljs-string">&#x27;app-hero-list&#x27;</span>,<br>  <span class="hljs-attribute">templateUrl</span>: <span class="hljs-string">&#x27;./hero-list.component.html&#x27;</span>,<br>  <span class="hljs-attribute">providers</span>:  [ HeroService ]<br>&#125;)<br></code></pre></td></tr></table></figure>
+
+<h2 id="定义提供者"><a href="#定义提供者" class="headerlink" title="定义提供者"></a>定义提供者</h2><h3 id="类提供者"><a href="#类提供者" class="headerlink" title="类提供者"></a>类提供者</h3><p>类提供者的语法实际上是一种简写形式，它会扩展成一个由 Provider 接口定义的提供者配置对象。下面的代码片段展示了 providers 中给出的类会如何扩展成完整的提供者配置对象。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">providers</span>:<span class="hljs-meta"> [Logger]</span><br></code></pre></td></tr></table></figure>
+
+<p>Angular 把这个 providers 值扩展为一个完整的提供者对象，如下所示。</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs clojure">[&#123; provide: Logger, useClass: Logger &#125;]<br></code></pre></td></tr></table></figure>
+
+<p>扩展的提供者配置是一个具有两个属性的对象字面量：</p>
+<ul>
+<li><p>provide 属性存有令牌，它作为一个 key，在定位依赖值和配置注入器时使用。</p>
+</li>
+<li><p>第二个属性是一个提供者定义对象，它告诉注入器要如何创建依赖值。提供者定义对象中的 key 可以是 useClass —— 就像这个例子中一样。也可以是 useExisting、useValue 或 useFactory。每一个 key 都用于提供一种不同类型的依赖，我们稍后会讨论。</p>
+</li>
+</ul>
+<h2 id="别名类提供者"><a href="#别名类提供者" class="headerlink" title="别名类提供者"></a>别名类提供者</h2><p>要为类提供者设置别名，请在 providers 数组中使用 useExisting 属性指定别名和类提供者。</p>
+<p>在下面的例子中，当组件请求新的或旧的记录器时，注入器都会注入一个 NewLogger 的实例。通过这种方式，OldLogger 就成了 NewLogger 的别名。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">[ NewLogger,<br>  <span class="hljs-regexp">//</span> Alias OldLogger w/ reference to NewLogger<br>  &#123; provide: OldLogger, useExisting: NewLogger&#125;]<br></code></pre></td></tr></table></figure>
+
+<p>请确保你没有使用 useClass 来把 OldLogger 设为 NewLogger 的别名，因为如果这样做它就会创建两个不同的 NewLogger 实例。</p>
+<h2 id="注入一个配置对象"><a href="#注入一个配置对象" class="headerlink" title="注入一个配置对象"></a>注入一个配置对象</h2><p>常用的对象字面量是配置对象。下列配置对象包括应用的标题和 Web API 的端点地址。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> HERO_DI_CONFIG: AppConfig = &#123;<br>  apiEndpoint: <span class="hljs-string">&#x27;api.heroes.com&#x27;</span>,<br>  title: <span class="hljs-string">&#x27;Dependency Injection&#x27;</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>定义和使用一个 InjectionToken 对象来为非类的依赖选择一个提供者令牌。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> &#123; InjectionToken &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@angular/core&#x27;</span>;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> APP_CONFIG = <span class="hljs-keyword">new</span> InjectionToken&lt;AppConfig&gt;(<span class="hljs-string">&#x27;app.config&#x27;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>接着，用 APP_CONFIG 这个 InjectionToken 对象在组件中注册依赖提供者。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">providers:</span> [&#123; <span class="hljs-attr">provide:</span> <span class="hljs-string">APP_CONFIG</span>, <span class="hljs-attr">useValue:</span> <span class="hljs-string">HERO_DI_CONFIG</span> &#125;]<br></code></pre></td></tr></table></figure>
+
+<p>现在，借助参数装饰器 @Inject()，你可以把这个配置对象注入到构造函数中。</p>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs delphi"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(@Inject(APP_CONFIG)</span> <span class="hljs-title">config</span>:</span> AppConfig) <span class="hljs-comment">&#123;</span><br><span class="hljs-comment">  this.title = config.title;</span><br><span class="hljs-comment">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="接口和依赖注入"><a href="#接口和依赖注入" class="headerlink" title="接口和依赖注入"></a>接口和依赖注入</h2><p>虽然 TypeScript 的 AppConfig 接口可以在类中提供类型支持，但它在依赖注入时却没有任何作用。在 TypeScript 中，接口是一项设计期工件，它没有可供 DI 框架使用的运行时表示形式或令牌。</p>
+<p>当转译器把 TypeScript 转换成 JavaScript 时，接口就会消失，因为 JavaScript 没有接口。</p>
+<p>由于 Angular 在运行期没有接口，所以该接口不能作为令牌，也不能注入它。</p>
+<h2 id="使用工厂提供者"><a href="#使用工厂提供者" class="headerlink" title="使用工厂提供者"></a>使用工厂提供者</h2><p>要想根据运行前尚不可用的信息创建可变的依赖值，可以使用工厂提供者。</p>
+<p>在下面的例子中，只有授权用户才能看到 HeroService 中的秘密英雄。授权可能在单个应用会话期间发生变化，比如改用其他用户登录。</p>
+<p>要想在 UserService 和 HeroService 中保存敏感信息，就要给 HeroService 的构造函数传一个逻辑标志来控制秘密英雄的显示。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"></span></span><br><span class="hljs-params"><span class="hljs-function">  <span class="hljs-keyword">private</span> logger: Logger,</span></span><br><span class="hljs-params"><span class="hljs-function">  <span class="hljs-keyword">private</span> isAuthorized: <span class="hljs-built_in">boolean</span></span>)</span> &#123; &#125;<br><br><span class="hljs-function"><span class="hljs-title">getHeroes</span>(<span class="hljs-params"></span>)</span> &#123;<br>  <span class="hljs-keyword">const</span> auth = <span class="hljs-built_in">this</span>.isAuthorized ? <span class="hljs-string">&#x27;authorized &#x27;</span> : <span class="hljs-string">&#x27;unauthorized&#x27;</span>;<br>  <span class="hljs-built_in">this</span>.logger.log(<span class="hljs-string">`Getting heroes for <span class="hljs-subst">$&#123;auth&#125;</span> user.`</span>);<br>  <span class="hljs-keyword">return</span> HEROES.filter(<span class="hljs-function"><span class="hljs-params">hero</span> =&gt;</span> <span class="hljs-built_in">this</span>.isAuthorized || !hero.isSecret);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>要实现 isAuthorized 标志，可以用工厂提供者来为 HeroService 创建一个新的 logger 实例。</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">const heroServiceFactory =<span class="hljs-function"> (<span class="hljs-params">logger</span>: L<span class="hljs-params">ogger</span>, <span class="hljs-params">userService</span>: U<span class="hljs-params">serService</span>) =&gt;</span><br>  <span class="hljs-keyword">new</span> <span class="hljs-constructor">HeroService(<span class="hljs-params">logger</span>, <span class="hljs-params">userService</span>.<span class="hljs-params">user</span>.<span class="hljs-params">isAuthorized</span>)</span>;<br></code></pre></td></tr></table></figure>
+
+<p>这个工厂函数可以访问 UserService。你可以同时把 Logger 和 UserService 注入到工厂提供者中，这样注入器就可以把它们传给工厂函数了。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-string">export</span> <span class="hljs-string">const</span> <span class="hljs-string">heroServiceProvider</span> <span class="hljs-string">=</span><br>  &#123; <span class="hljs-attr">provide:</span> <span class="hljs-string">HeroService</span>,<br>    <span class="hljs-attr">useFactory:</span> <span class="hljs-string">heroServiceFactory</span>,<br>    <span class="hljs-attr">deps:</span> [<span class="hljs-string">Logger</span>, <span class="hljs-string">UserService</span>]<br>  &#125;<span class="hljs-string">;</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>useFactory 字段指定该提供者是一个工厂函数，其实现代码是 heroServiceFactory</p>
+</li>
+<li><p>deps 属性是一个提供者令牌数组。Logger 和 UserService 类都是自己类提供者的令牌。该注入器解析了这些令牌，并把相应的服务注入到 heroServiceFactory 工厂函数的参数中。</p>
+</li>
+</ul>
+<p>通过把工厂提供者导出为变量 heroServiceProvider，就能让工厂提供者变得可复用。</p>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs coffeescript"><span class="hljs-keyword">import</span> &#123; Component &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@angular/core&#x27;</span>;<br><span class="hljs-keyword">import</span> &#123; heroServiceProvider &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./hero.service.provider&#x27;</span>;<br><br>@Component(&#123;<br>  selector: <span class="hljs-string">&#x27;app-heroes&#x27;</span>,<br>  providers: [ heroServiceProvider ],<br>  template: `<span class="javascript"></span><br><span class="javascript">    &lt;h2&gt;Heroes&lt;/h2&gt;</span><br><span class="javascript">    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">app-hero-list</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">app-hero-list</span>&gt;</span></span></span><br><span class="javascript">  </span>`<br>&#125;)<br><span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HeroesComponent</span> &#123; &#125;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="多级注入器"><a href="#多级注入器" class="headerlink" title="多级注入器"></a>多级注入器</h2><p>Angular 中有两个注入器层次结构：</p>
+<ul>
+<li><p>ModuleInjector 层次结构：使用 @NgModule() 或 @Injectable() 注解在此层次结构中配置 ModuleInjector。</p>
+</li>
+<li><p>ElementInjector 层次结构：在每个 DOM 元素上隐式创建。默认情况下，ElementInjector 是空的，除非你在 @Directive() 或 @Component() 的 providers 属性中配置它。</p>
+</li>
+</ul>
+<h3 id="ModuleInjector"><a href="#ModuleInjector" class="headerlink" title="ModuleInjector"></a>ModuleInjector</h3><p>可以通过以下两种方式之一配置 ModuleInjector ：</p>
+<ul>
+<li><p>使用 @Injectable() 的 providedIn 属性引用 @NgModule() 或 root</p>
+</li>
+<li><p>使用 @NgModule() 的 providers 数组</p>
+</li>
+</ul>
+<h4 id="摇树优化与-Injectable"><a href="#摇树优化与-Injectable" class="headerlink" title="摇树优化与 @Injectable()"></a>摇树优化与 @Injectable()</h4><blockquote>
+<p>使用 @Injectable() 的 providedIn 属性优于 @NgModule() 的 providers 数组，因为使用 @Injectable() 的 providedIn 时，优化工具可以进行摇树优化，从而删除你的应用程序中未使用的服务，以减小捆绑包尺寸。摇树优化对于库特别有用，因为使用该库的应用程序不需要注入它。</p>
+</blockquote>
+<p>ModuleInjector 由 @NgModule.providers 和 NgModule.imports 属性配置。ModuleInjector 是可以通过 NgModule.imports 递归找到的所有 providers 数组的扁平化。</p>
+<p>子 ModuleInjector 是在惰性加载其它 @NgModules 时创建的。</p>
+<h4 id="平台注入器"><a href="#平台注入器" class="headerlink" title="平台注入器"></a>平台注入器</h4><p>在 root 之上还有两个注入器，一个是额外的 ModuleInjector，一个是 NullInjector()。</p>
+<p>另一个额外的ModuleInjector这里不作赘述，感兴趣的可以去官网了解。</p>
+<p>层次结构中的下一个父注入器是 NullInjector()，它是树的顶部。如果你在树中向上走了很远，以至于要在 NullInjector() 中寻找服务，那么除非使用 @Optional()，否则将收到错误消息，因为最终所有东西都将以 NullInjector() 结束并返回错误，或者对于 @Optional()，返回 null。</p>
+<p>下图展示了前面各段落描述的 root ModuleInjector 及其父注入器之间的关系。</p>
+<p><img src="/img/inject/injectors.svg" srcset="/img/loading.gif" lazyload></p>
+<h3 id="ElementInjector"><a href="#ElementInjector" class="headerlink" title="ElementInjector"></a>ElementInjector</h3><p>Angular 会为每个 DOM 元素隐式创建 ElementInjector。</p>
+<p>可以用 @Component() 装饰器中的 providers 或 viewProviders 属性来配置 ElementInjector 以提供服务。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-variable">@Component</span>(&#123;<br>  …<br>  <span class="hljs-attribute">providers</span>: [&#123; <span class="hljs-attribute">provide</span>: ItemService, <span class="hljs-attribute">useValue</span>: &#123; <span class="hljs-attribute">name</span>: <span class="hljs-string">&#x27;lamp&#x27;</span> &#125; &#125;]<br>&#125;)<br>export class TestComponent<br></code></pre></td></tr></table></figure>
+
+<h3 id="解析规则"><a href="#解析规则" class="headerlink" title="解析规则"></a>解析规则</h3><p>当为组件/指令解析令牌时，Angular 分为两个阶段来解析它：</p>
+<ol>
+<li><p>针对 ElementInjector 层次结构（其父级）。</p>
+</li>
+<li><p>针对 ModuleInjector 层次结构（其父级）。</p>
+</li>
+</ol>
+<p>当组件声明依赖项时，Angular 会尝试使用它自己的 ElementInjector 来满足该依赖。 如果组件的注入器缺少提供者，它将把请求传给其父组件的 ElementInjector。</p>
+<p>这些请求将继续转发，直到 Angular 找到可以处理该请求的注入器或用完祖先 ElementInjector。</p>
+<p>如果 Angular 在任何 ElementInjector 中都找不到提供者，它将返回到发起请求的元素，并在 ModuleInjector 层次结构中进行查找。如果 Angular 仍然找不到提供者，它将引发错误。</p>
+<p>如果你已在不同级别注册了相同 DI 令牌的提供者，则 Angular 会用遇到的第一个来解析该依赖。比如，如果提供者已经在需要此服务的组件中本地注册了，则 Angular 不会再寻找同一服务的其它提供者。</p>
+<h3 id="解析修饰符"><a href="#解析修饰符" class="headerlink" title="解析修饰符"></a>解析修饰符</h3><p>可以使用 @Optional()，@Self()，@SkipSelf() 和 @Host() 来修饰 Angular 的解析行为。从 @angular/core 导入它们，并在注入服务时在组件类构造函数中使用它们。</p>
+<h4 id="修饰符的类型"><a href="#修饰符的类型" class="headerlink" title="修饰符的类型"></a>修饰符的类型</h4><p>解析修饰符分为三类：</p>
+<ul>
+<li><p>如果 Angular 找不到你要的东西该怎么办，用 @Optional()</p>
+</li>
+<li><p>从哪里开始寻找，用 @SkipSelf()</p>
+</li>
+<li><p>到哪里停止寻找，用 @Host() 和 @Self()</p>
+</li>
+</ul>
+<p>默认情况下，Angular 始终从当前的 Injector 开始，并一直向上搜索。修饰符使你可以更改开始（默认是自己）或结束位置。</p>
+<p>另外，你可以组合除 @Host() 和 @Self() 之外的所有修饰符，当然还有 @SkipSelf() 和 @Self()。</p>
+<h4 id="Optional"><a href="#Optional" class="headerlink" title="@Optional()"></a>@Optional()</h4><p>@Optional() 允许 Angular 将你注入的服务视为可选服务。这样，如果无法在运行时解析它，Angular 只会将服务解析为 null，而不会抛出错误。在下面的范例中，服务 OptionalService 没有在 @NgModule() 或组件类中提供，所以它没有在应用中的任何地方。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-selector-tag">export</span> <span class="hljs-selector-tag">class</span> <span class="hljs-selector-tag">OptionalComponent</span> &#123;<br>  <span class="hljs-selector-tag">constructor</span>(<span class="hljs-variable">@Optional</span>() public optional?: OptionalService) &#123;&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="Self"><a href="#Self" class="headerlink" title="@Self()"></a>@Self()</h4><p>使用 @Self() 让 Angular 仅查看当前组件或指令的 ElementInjector。</p>
+<p>@Self() 的一个好例子是要注入某个服务，但只有当该服务在当前宿主元素上可用时才行。为了避免这种情况下出错，请将 @Self() 与 @Optional() 结合使用。</p>
+<h4 id="SkipSelf"><a href="#SkipSelf" class="headerlink" title="@SkipSelf()"></a>@SkipSelf()</h4><p>@SkipSelf() 与 @Self() 相反。使用 @SkipSelf()，Angular 在父 ElementInjector 中而不是当前 ElementInjector 中开始搜索服务。</p>
+<h4 id="Host"><a href="#Host" class="headerlink" title="@Host()"></a>@Host()</h4><p>@Host() 使你可以在搜索提供者时将当前组件指定为注入器树的最后一站。即使树的更上级有一个服务实例，Angular 也不会继续寻找。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>由于angular的依赖注入知识体系实在是过于庞大，本文也仅仅是了解了下它的基础用法，但是掌握了这些也足够我们在平常的开发中使用了，当然只学习用法和真正实践还是有很大区别的，有机会还是要多实践，除此之外angular还有很多依赖注入的高级实践，等以后有机会学习实践以后会再来补充文章。最后，angular官网文档yyds！</p>
 
             </div>
             <hr>
