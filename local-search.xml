@@ -4,6 +4,33 @@
   
   
   <entry>
+    <title>Angular中的依赖注入</title>
+    <link href="/2022/07/20/Angular%E4%B8%AD%E7%9A%84%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/"/>
+    <url>/2022/07/20/Angular%E4%B8%AD%E7%9A%84%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/</url>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>相信angular中的「依赖注入」对于大部分的angular开发者都是一个不容易跨过去的坎，当然我也不例外，这篇文章构思了很久，大概从一年前就想对此来个总结，奈何不知道从何写起，主要原因是在平常的实际开发中用到的依赖注入的知识太浅，所以并不能很好的读懂文档的意思，如今有机会在实际的项目中接触到了更多依赖注入的用法，故此总结一下。本文内容大部分来源于官方文档，因为文档中的知识点过于零散，东一锤子西一棒子的，摸不着头脑，所以我按照自己的理解，加上实际的demo来梳理一下其中的知识点。</p><h2 id="什么是「依赖注入（dependency-injection）」？"><a href="#什么是「依赖注入（dependency-injection）」？" class="headerlink" title="什么是「依赖注入（dependency injection）」？"></a>什么是「依赖注入（dependency injection）」？</h2><blockquote><p>依赖注入既是设计模式，同时又是一种机制：当应用程序的一些部件（即一些依赖）需要另一些部件时， 利用依赖注入来创建被请求的部件，并将它们注入到需要它们的部件中。<br>在 Angular 中，依赖通常是服务，但是也可以是值，比如字符串或函数。应用的注入器（它是在启动期间自动创建的）会使用该服务或值的配置好的提供者来按需实例化这些依赖。各个不同的提供者可以为同一个服务提供不同的实现。</p></blockquote><p>上面这段话用我自己的理解，通俗的来讲就是，之前我们如果想要实例化类（class）的一个对象，就要用「new」运算符来实现，现在有了依赖注入这个东西以后就不需要我们自己亲自动手去new一个对象了，我们只需要在用到的地方使用angular的「依赖注入」的语法，就可以拿到我们想要的对象了，而帮助我们创建对象的这个东西叫做「注入器」，注入器这个东西，很抽象，我们看不见摸不着，这是angular在运行过程中帮助我们自动创建的。</p><p>先把几个名词搞清楚，「服务」、「注入器」、「DI令牌」、「提供者」。</p><h2 id="服务"><a href="#服务" class="headerlink" title="服务"></a>服务</h2><p>在 Angular 中，服务就是一个带有 @Injectable 装饰器的类，它封装了可以在应用程序中复用的非 UI 逻辑和代码。 Angular 把组件和服务分开，是为了增进模块化程度和可复用性。</p><p>@Injectable 元数据让服务类能用于依赖注入机制中。可注入的类是用提供者进行实例化的。 各个注入器会维护一个提供者的列表，并根据组件或其它服务的需要，用它们来提供服务的实例。</p><h2 id="DI令牌"><a href="#DI令牌" class="headerlink" title="DI令牌"></a>DI令牌</h2><p>一种用来查阅的令牌，它关联到一个依赖提供者，用于依赖注入系统中，DI令牌和注入的依赖项相映射，可以把DI令牌作为key来找到依赖项。</p><p>令牌通常是 Type 或 InjectionToken 的实例，但也可以是 any 实例。</p><h2 id="提供者"><a href="#提供者" class="headerlink" title="提供者"></a>提供者</h2><p>一个实现了 Provider 接口的对象。一个提供者对象定义了如何获取与 DI 令牌（token） 相关联的可注入依赖。 注入器会使用这个提供者来创建它所依赖的那些类的实例。</p><p>Angular 会为每个注入器注册一些 Angular 自己的服务。你也可以注册应用自己所需的服务提供者。</p><p>依赖提供者会使用 DI 令牌来配置注入器，注入器会用它来提供这个依赖值的具体的、运行时版本。</p><figure class="highlight coq"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs coq">type Provider = TypeProvider | <span class="hljs-type">ValueProvider</span> | <span class="hljs-type">ClassProvider</span> | <span class="hljs-type">ConstructorProvider</span> | <span class="hljs-type">ExistingProvider</span> | <span class="hljs-type">FactoryProvider</span> | <span class="hljs-type">any</span>[];<br></code></pre></td></tr></table></figure><p>ClassProvider</p><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs angelscript"><span class="hljs-keyword">interface</span> <span class="hljs-symbol">ClassProvider</span> <span class="hljs-symbol">extends</span> <span class="hljs-symbol">ClassSansProvider</span> &#123;<br>  <span class="hljs-comment">// DI 令牌</span><br>  provide: any<br>  multi?: <span class="hljs-built_in">bool</span>ean<br><br>  <span class="hljs-comment">// 继承自 core/ClassSansProvider</span><br>  useClass: Type&lt;any&gt;<br>&#125;<br></code></pre></td></tr></table></figure><h2 id="注入器"><a href="#注入器" class="headerlink" title="注入器"></a>注入器</h2><p>Angular 依赖注入系统中可以在缓存中根据名字查找依赖，也可以通过配置过的「提供者」来创建依赖。 启动过程中会自动为每个模块创建一个注入器，并被组件树继承。</p><ul><li><p>注入器会提供依赖的一个单例，并把这个单例对象注入到多个组件中。</p></li><li><p>模块和组件级别的注入器树可以为它们拥有的组件及其子组件提供同一个依赖的不同实例。</p></li><li><p>你可以为同一个依赖使用不同的提供者来配置这些注入器，这些提供者可以为同一个依赖提供不同的实现。</p></li></ul><h2 id="怎么注入一个服务？"><a href="#怎么注入一个服务？" class="headerlink" title="怎么注入一个服务？"></a>怎么注入一个服务？</h2><p>上面👆介绍了，在 Angular 中服务就是一个带有 @Injectable() 装饰器的类，可以把它作为依赖，注入到组件中。同样，也要使用 @Injectable() 装饰器来表明一个组件或其它类（比如另一个服务、管道或 NgModule）拥有一个依赖，我们实际项目中绝大部分注入的依赖都是服务。</p><ul><li><p><strong>注入器</strong>是主要的机制。Angular 会在启动过程中为你创建全应用级注入器以及所需的其它注入器。你不用自己创建「注入器」。</p></li><li><p>该注入器会创建依赖、维护一个容器来管理这些依赖，并尽可能复用它们。</p></li><li><p><strong>提供者</strong>是一个对象，用来告诉注入器应该如何获取或创建依赖。</p></li></ul><p>你的应用中所需的任何依赖，都必须使用该应用的注入器来注册一个<strong>提供者</strong>，以便注入器可以使用这个提供者来创建新实例。对于服务，该提供者通常就是服务类本身。</p><blockquote><p>依赖不一定是服务 —— 它还可能是函数或值。</p></blockquote><p>当 Angular 创建组件类的新实例时，它会通过查看该组件类的构造函数，来决定该组件依赖哪些服务或其它依赖项。如下：HeroListComponent 的构造函数中需要 HeroService</p><figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs delphi"><span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(<span class="hljs-keyword">private</span> service: HeroService)</span> <span class="hljs-comment">&#123; &#125;</span></span><br></code></pre></td></tr></table></figure><p>当 Angular 发现某个组件依赖某个服务时，它会首先检查是否该注入器中已经有了那个服务的任何现有实例。如果所请求的服务尚不存在实例，注入器就会使用以前注册的服务提供者来制作一个，并把它加入注入器中，然后把该服务返回给 Angular。</p><p>当所有请求的服务已解析并返回时，Angular 可以用这些服务实例为参数，调用该组件的构造函数。</p><p>注入过程可以用下方非常形象和经典的一张图来概括：</p><p><img src="/img/inject/injector-injects.png"></p><p>个人理解：图中的Injector就是注入器，它管理着很多的依赖，Angular中「依赖项」和「DI令牌」相映射，「DI令牌」作为映射的key，「依赖项」作为映射的value，当发现构造函数中依赖HeroService时，注入器就会把HeroService当作「DI令牌」去注入器中去查找相应的「依赖项」，找到依赖项以后，然后再去查找该依赖有没有已经实例化好的对象，如果有就直接返回该对象，如果没有，注入器就会根据该依赖的「提供者」去创建对象，所以说对象是由注入器根据提供者创建的。「服务」的提供者默认就是 useClass，也就是注入器会通过 new 的方式创建一个对象，当然此外「提供者」可以是 useValue 或 useFactory等。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Angular</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>angular</tag>
+      
+      <tag>依赖注入</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>react学习笔记-基础语法</title>
     <link href="/2022/03/29/react%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/"/>
     <url>/2022/03/29/react%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/</url>
