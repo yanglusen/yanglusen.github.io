@@ -16,16 +16,16 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="我们每天发现的一些最常用的 RxJs 操作符是 RxJs 高阶映射操作符：switchMap、mergeMap、concatMap 和 exhaustMap。 例如，我们程序中的大多数网络调用都将使用这些运算符之一来完成，因此熟悉它们对于编写几乎任何响应式程序都是必不可少的。 知道在给定情况下使用哪个运算符（以及为什么）可能会有点令人困惑，我们经常想知道这些运算符是如何真正工作的以及为什么它们被这">
+    <meta name="description" content="原文: Comprehensive Guide to Higher-Order RxJs Mapping Operators: switchMap, mergeMap, concatMap (and exhaustMap) 我们每天发现的一些最常用的 RxJs 操作符是 RxJs 高阶映射操作符：switchMap、mergeMap、concatMap 和 exhaustMap。 例如，我们程序中">
 <meta property="og:type" content="article">
 <meta property="og:title" content="高阶 RxJs 映射运算符综合指南：switchMap、mergeMap、concatMap（和 excludeMap）【译】">
 <meta property="og:url" content="http://example.com/2022/09/01/%E9%AB%98%E9%98%B6-RxJs-%E6%98%A0%E5%B0%84%E8%BF%90%E7%AE%97%E7%AC%A6%E7%BB%BC%E5%90%88%E6%8C%87%E5%8D%97%EF%BC%9AswitchMap%E3%80%81mergeMap%E3%80%81concatMap%EF%BC%88%E5%92%8C-excludeMap%EF%BC%89%E3%80%90%E8%AF%91%E3%80%91/index.html">
 <meta property="og:site_name" content="lusyn的个人博客">
-<meta property="og:description" content="我们每天发现的一些最常用的 RxJs 操作符是 RxJs 高阶映射操作符：switchMap、mergeMap、concatMap 和 exhaustMap。 例如，我们程序中的大多数网络调用都将使用这些运算符之一来完成，因此熟悉它们对于编写几乎任何响应式程序都是必不可少的。 知道在给定情况下使用哪个运算符（以及为什么）可能会有点令人困惑，我们经常想知道这些运算符是如何真正工作的以及为什么它们被这">
+<meta property="og:description" content="原文: Comprehensive Guide to Higher-Order RxJs Mapping Operators: switchMap, mergeMap, concatMap (and exhaustMap) 我们每天发现的一些最常用的 RxJs 操作符是 RxJs 高阶映射操作符：switchMap、mergeMap、concatMap 和 exhaustMap。 例如，我们程序中">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/rxjsMap/banner.jpeg">
 <meta property="article:published_time" content="2022-09-01T10:22:18.000Z">
-<meta property="article:modified_time" content="2022-09-18T15:41:30.561Z">
+<meta property="article:modified_time" content="2022-09-18T15:50:36.721Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="operators">
 <meta property="article:tag" content="rxjs">
@@ -209,7 +209,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      108 分钟
+      109 分钟
     </span>
   
 
@@ -241,7 +241,8 @@
             <h1 style="display: none">高阶 RxJs 映射运算符综合指南：switchMap、mergeMap、concatMap（和 excludeMap）【译】</h1>
             
             <div class="markdown-body">
-              <p>我们每天发现的一些最常用的 RxJs 操作符是 RxJs 高阶映射操作符：switchMap、mergeMap、concatMap 和 exhaustMap。</p>
+              <p><strong><a target="_blank" rel="noopener" href="https://blog.angular-university.io/rxjs-higher-order-mapping/">原文: Comprehensive Guide to Higher-Order RxJs Mapping Operators: switchMap, mergeMap, concatMap (and exhaustMap)</a></strong></p>
+<p>我们每天发现的一些最常用的 RxJs 操作符是 RxJs 高阶映射操作符：switchMap、mergeMap、concatMap 和 exhaustMap。</p>
 <p>例如，我们程序中的大多数网络调用都将使用这些运算符之一来完成，因此熟悉它们对于编写几乎任何响应式程序都是必不可少的。</p>
 <p>知道在给定情况下使用哪个运算符（以及为什么）可能会有点令人困惑，我们经常想知道这些运算符是如何真正工作的以及为什么它们被这样命名。</p>
 <p>这些操作符看起来似乎无关，但我们真的很想一口气学完它们，因为选择错误的操作符可能会意外地导致我们的程序出现一些微妙的问题。</p>
