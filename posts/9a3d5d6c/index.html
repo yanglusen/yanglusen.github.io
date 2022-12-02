@@ -16,16 +16,16 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言 相信angular中的「依赖注入」对于大部分的angular开发者都是一个不容易跨过去的坎，当然我也不例外，这篇文章构思了很久，大概从一年前就想对此来个总结，奈何不知道从何写起，主要原因是在平常的实际开发中用到的依赖注入的知识太浅，所以并不能很好的读懂文档的意思，如今有机会在实际的项目中接触到了更多依赖注入的用法，故此总结一下。本文内容大部分来源于官方文档，因为文档中的知识点过于零散，东一锤">
+    <meta name="description" content="前言 相信angular中的「依赖注入」对于大部分的angular开发者都是一个不容易跨过去的坎，当然我也不例外，这篇文章构思了很久，大概从一年前就想对此来个总结，奈何不知道从何写起，主要原因是在平常的实际开发中用到的依赖注入的知识太浅，所以并不能很好的读懂文档的意思，如今有机会在实际的项目中接触到了更多依赖注入的用法，故此总结一下。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Angular中的依赖注入">
 <meta property="og:url" content="http://example.com/posts/9a3d5d6c/index.html">
 <meta property="og:site_name" content="lusyn的个人博客">
-<meta property="og:description" content="前言 相信angular中的「依赖注入」对于大部分的angular开发者都是一个不容易跨过去的坎，当然我也不例外，这篇文章构思了很久，大概从一年前就想对此来个总结，奈何不知道从何写起，主要原因是在平常的实际开发中用到的依赖注入的知识太浅，所以并不能很好的读懂文档的意思，如今有机会在实际的项目中接触到了更多依赖注入的用法，故此总结一下。本文内容大部分来源于官方文档，因为文档中的知识点过于零散，东一锤">
+<meta property="og:description" content="前言 相信angular中的「依赖注入」对于大部分的angular开发者都是一个不容易跨过去的坎，当然我也不例外，这篇文章构思了很久，大概从一年前就想对此来个总结，奈何不知道从何写起，主要原因是在平常的实际开发中用到的依赖注入的知识太浅，所以并不能很好的读懂文档的意思，如今有机会在实际的项目中接触到了更多依赖注入的用法，故此总结一下。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/inject/injector-injects.png">
 <meta property="article:published_time" content="2022-07-20T14:02:58.000Z">
-<meta property="article:modified_time" content="2022-12-02T06:29:08.280Z">
+<meta property="article:modified_time" content="2022-12-02T06:58:49.048Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="angular">
 <meta property="article:tag" content="依赖注入">
@@ -242,7 +242,9 @@
             
             <div class="markdown-body">
               <h2 id="前言">前言</h2>
-<p>相信angular中的「依赖注入」对于大部分的angular开发者都是一个不容易跨过去的坎，当然我也不例外，这篇文章构思了很久，大概从一年前就想对此来个总结，奈何不知道从何写起，主要原因是在平常的实际开发中用到的依赖注入的知识太浅，所以并不能很好的读懂文档的意思，如今有机会在实际的项目中接触到了更多依赖注入的用法，故此总结一下。本文内容大部分来源于官方文档，因为文档中的知识点过于零散，东一锤子西一棒子的，摸不着头脑，所以我按照自己的理解，加上实际的demo来梳理一下其中的知识点。</p>
+<p>相信angular中的「依赖注入」对于大部分的angular开发者都是一个不容易跨过去的坎，当然我也不例外，这篇文章构思了很久，大概从一年前就想对此来个总结，奈何不知道从何写起，主要原因是在平常的实际开发中用到的依赖注入的知识太浅，所以并不能很好的读懂文档的意思，如今有机会在实际的项目中接触到了更多依赖注入的用法，故此总结一下。</p>
+<span id="more"></span>
+<p>本文内容大部分来源于官方文档，因为文档中的知识点过于零散，东一锤子西一棒子的，摸不着头脑，所以我按照自己的理解，加上实际的demo来梳理一下其中的知识点。</p>
 <h2 id="什么是「依赖注入（dependency-injection）」？">什么是「依赖注入（dependency injection）」？</h2>
 <blockquote>
 <p>依赖注入既是设计模式，同时又是一种机制：当应用程序的一些部件（即一些依赖）需要另一些部件时， 利用依赖注入来创建被请求的部件，并将它们注入到需要它们的部件中。<br>
