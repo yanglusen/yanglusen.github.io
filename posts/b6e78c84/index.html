@@ -16,18 +16,23 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="article">
-<meta property="og:title" content="学习JavaScript Intersection Observer API">
-<meta property="og:url" content="http://example.com/posts/4e1dac9a/index.html">
+    <meta name="description" content="关键点：利用Element.getBoundingClientRect()函数 Element.getBoundingClientRect() 介绍 看一下mdn的解释：  The Element.getBoundingClientRect() method returns a DOMRect object providing information about the size of an el">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何在js中计算字符串的像素长度">
+<meta property="og:url" content="http://example.com/posts/b6e78c84/index.html">
 <meta property="og:site_name" content="lusyn的个人博客">
+<meta property="og:description" content="关键点：利用Element.getBoundingClientRect()函数 Element.getBoundingClientRect() 介绍 看一下mdn的解释：  The Element.getBoundingClientRect() method returns a DOMRect object providing information about the size of an el">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-11-12T09:48:15.000Z">
-<meta property="article:modified_time" content="2022-12-02T06:23:35.454Z">
+<meta property="og:image" content="http://example.com/img/calculate/outside.jpg">
+<meta property="article:published_time" content="2022-02-10T05:59:51.000Z">
+<meta property="article:modified_time" content="2022-12-02T06:29:08.276Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="JavaScript">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/calculate/outside.jpg">
   
   
-  <title>学习JavaScript Intersection Observer API - lusyn的个人博客</title>
+  <title>如何在js中计算字符串的像素长度 - lusyn的个人博客</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
@@ -168,12 +173,12 @@
 </nav>
 
     <div class="banner" id="banner" parallax=true
-         style="background: url('/img/main-bg.jpg') no-repeat center center;
+         style="background: url('/img/calculate/outside.jpg') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="学习JavaScript Intersection Observer API">
+            <span class="h2" id="subtitle" title="如何在js中计算字符串的像素长度">
               
             </span>
 
@@ -183,8 +188,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-11-12 17:48" pubdate>
-        2022年11月12日 下午
+      <time datetime="2022-02-10 13:59" pubdate>
+        2022年2月10日 下午
       </time>
     </span>
   
@@ -194,7 +199,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      0 字
+      1.7k 字
     </span>
   
 
@@ -203,7 +208,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      1 分钟
+      15 分钟
     </span>
   
 
@@ -232,15 +237,56 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">学习JavaScript Intersection Observer API</h1>
+            <h1 style="display: none">如何在js中计算字符串的像素长度</h1>
             
             <div class="markdown-body">
-              
+              <p>关键点：利用Element.getBoundingClientRect()函数</p>
+<h3 id="Element-getBoundingClientRect-介绍">Element.getBoundingClientRect() 介绍</h3>
+<p>看一下mdn的解释：</p>
+<blockquote>
+<p>The Element.getBoundingClientRect() method returns a DOMRect object providing information about the size of an element and its position relative to the viewport.</p>
+</blockquote>
+<p>说的是这个函数会返回一个DOMRect对象，这个对象中会包含当前dom元素的一些信息，如相对于视窗的位置、宽高等。</p>
+<p>需要注意的是这里返回的元素的宽高是包含元素的border-width和padding的，因为盒子默认的是标准盒模型（standard box），如果设置了box-sizing：border-box的话，则获取到的宽高只包含元素内容的宽高。</p>
+<h4 id="DOMRect对象">DOMRect对象</h4>
+<p>DOMRect对象描述了一个矩形的大小和位置，属性都是只读的。</p>
+<p>通过mdn上的一个demo看一下都有哪些属性吧:</p>
+<p>html</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs apache"><span class="hljs-section">&lt;div&gt;</span><span class="hljs-section">&lt;/div&gt;</span><br></code></pre></td></tr></table></figure>
+<p>css</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-tag">div</span> &#123;<br>  <span class="hljs-attribute">width</span>: <span class="hljs-number">400px</span>;<br>  <span class="hljs-attribute">height</span>: <span class="hljs-number">200px</span>;<br>  <span class="hljs-attribute">background</span>: purple;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>javascript</p>
+<figure class="highlight qml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs qml"><span class="hljs-keyword">let</span> elem = <span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">&#x27;div&#x27;</span>);<br><span class="hljs-keyword">let</span> <span class="hljs-built_in">rect</span> = elem.getBoundingClientRect();<br><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> <span class="hljs-built_in">rect</span>) &#123;<br>  <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">rect</span>[key] !== <span class="hljs-string">&#x27;function&#x27;</span>) &#123;<br>    <span class="hljs-keyword">let</span> para = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;p&#x27;</span>);<br>    para.textContent  = <span class="hljs-string">`<span class="hljs-subst">$&#123; key &#125;</span> : <span class="hljs-subst">$&#123; rect[key] &#125;</span>`</span>;<br>    <span class="hljs-built_in">document</span>.body.appendChild(para);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://codepen.io/yanglusen/pen/YzEVGgq">传送门</a></p>
+<p>运行结果如下：</p>
+<p><img src="/img/calculate/result.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>这里的width属性正是我们想要的元素的宽度。</p>
+<p>这里解释下，代码里没有设置margin:8px,为什么会有8像素的margin呢，是以为codePen这个在线编辑器的body有默认的8px的margin。</p>
+<h3 id="最终代码">最终代码</h3>
+<p>其实知道了关键的方法代码也就出来了，如下这是ts的写法：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 计算字符串的像素长度</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param </span>str 输入的字符串</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param </span>fontSize 字体大小</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns </span>输入字符串的像素长度</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> getTextWidth(str: <span class="hljs-built_in">string</span>,<span class="hljs-attr">fontSize</span>: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">number</span> &#123;<br> <span class="hljs-keyword">let</span> result = <span class="hljs-number">0</span>;<br> <span class="hljs-keyword">const</span> ele = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;div&#x27;</span>);<br> ele.style.position = <span class="hljs-string">&#x27;absolute&#x27;</span>;<br> ele.style.whiteSpace = <span class="hljs-string">&#x27;nowrap&#x27;</span>;<br> ele.style.fontSize = fontSize;<br> ele.style.fontFamily = <span class="hljs-string">&#x27;inherit&#x27;</span>;<br> ele.style.opacity = <span class="hljs-string">&#x27;0&#x27;</span>;<br> ele.innerText = str;<br> <span class="hljs-built_in">document</span>.body.append(ele);<br> result = ele.getBoundingClientRect().width;<br> <span class="hljs-built_in">document</span>.body.removeChild(ele);<br> <span class="hljs-keyword">return</span> result;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>需要注意的是字符串的字体样式如fontFamily、fontSize等都会影响其宽度的，因为我的需求中字体都是Chrome默认的，只有大小会不同，所以单独把字体大小作为形参提了出来。</p>
+<p>笔者水平有限，若有错误敬请指正，不明白的地方也可评论区留言交流~</p>
+
             </div>
             <hr>
             <div>
               <div class="post-metas mb-3">
                 
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/JavaScript/">JavaScript</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/JavaScript/">JavaScript</a>
+                    
+                  </div>
                 
               </div>
               
@@ -255,12 +301,18 @@
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/posts/445dfd0e/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">angular中防抖的实现</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/posts/61885c8d/">
-                        <span class="hidden-mobile">Angular中的开发技巧</span>
+                      <a href="/posts/1f09b34d/">
+                        <span class="hidden-mobile">ng-zorro中实现两个table同步滚动效果</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
