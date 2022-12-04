@@ -16,15 +16,20 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="article">
+    <meta name="description" content="在我们公司的产品中，发现了一个新上线的有意思的交互效果，原本我以为这种交互是借助了 positon: sticky 定位实现，但是细细观察后发现并不是，于是翻看源码研究了一下，并于此学到了一个新的有意思的 API: Intersection Observer。">
+<meta property="og:type" content="article">
 <meta property="og:title" content="学习JavaScript Intersection Observer API">
 <meta property="og:url" content="http://example.com/posts/4e1dac9a/index.html">
 <meta property="og:site_name" content="lusyn的个人博客">
+<meta property="og:description" content="在我们公司的产品中，发现了一个新上线的有意思的交互效果，原本我以为这种交互是借助了 positon: sticky 定位实现，但是细细观察后发现并不是，于是翻看源码研究了一下，并于此学到了一个新的有意思的 API: Intersection Observer。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/intersection/banner.jpeg">
 <meta property="article:published_time" content="2022-11-12T09:48:15.000Z">
-<meta property="article:modified_time" content="2022-12-02T06:23:35.454Z">
+<meta property="article:modified_time" content="2022-12-04T07:07:56.628Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="js原生api">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/intersection/banner.jpeg">
   
   
   <title>学习JavaScript Intersection Observer API - lusyn的个人博客</title>
@@ -168,7 +173,7 @@
 </nav>
 
     <div class="banner" id="banner" parallax=true
-         style="background: url('/img/main-bg.jpg') no-repeat center center;
+         style="background: url('/img/intersection/banner.jpeg') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
@@ -194,7 +199,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      0 字
+      4.1k 字
     </span>
   
 
@@ -203,7 +208,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      1 分钟
+      34 分钟
     </span>
   
 
@@ -235,12 +240,88 @@
             <h1 style="display: none">学习JavaScript Intersection Observer API</h1>
             
             <div class="markdown-body">
-              
+              <p>在我们公司的产品中，发现了一个新上线的有意思的交互效果，原本我以为这种交互是借助了 positon: sticky 定位实现，但是细细观察后发现并不是，于是翻看源码研究了一下，并于此学到了一个新的有意思的 API: Intersection Observer。</p>
+<span id="more"></span>
+<p>先看一下产品的交互效果：当滚动条向下滚动时，在内容的标题即将消失的时候，模块框顶部的标题内容就换成了内容的标题。</p>
+<p><img src="/img/intersection/1.gif" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>先说一下实现思路吧：实现此交互的关键点就是在于怎么优雅的判断出内容的标题的可见性？解决了这个问题以后，接下来就是在内容的标题消失或者出现的节点，添加上相应的 css 过渡属性（transition）样式就可以了。</p>
+<h3 id="Intersection-observer-概念和用法">Intersection observer 概念和用法</h3>
+<p>Intersection Observer API 提供了一种异步观察目标元素与祖先元素或顶级文档视口交集中的变化的方法。</p>
+<p>Intersection Observer API 允许您配置一个回调函数，在以下情况发生时调用该函数:</p>
+<ul>
+<li>
+<p>每当目标 (target) 元素与设备视窗或者其他指定元素发生交集的时候执行。设备视窗或者其他元素我们称它为根元素或根 (root)。</p>
+</li>
+<li>
+<p>Observer 第一次监听目标元素的时候</p>
+</li>
+</ul>
+<p>目标 (target) 元素与根 (root) 元素之间的交叉度是交叉比 (intersection ratio)。这是目标 (target) 元素相对于根 (root) 的交集百分比的表示，它的取值在 0.0 和 1.0 之间。</p>
+<p>用法也是非常简单，分为以下步骤：</p>
+<ol>
+<li>创建一个 intersection observer</li>
+</ol>
+<p>创建一个 IntersectionObserver 对象，并传入相应参数和回调用函数，该回调函数将会在目标 (target) 元素和根 (root) 元素的交集大小超过阈值 (threshold) 规定的大小时候被执行。</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-keyword">let</span> options = &#123;<br>  root: document.query<span class="hljs-constructor">Selector(&#x27;#<span class="hljs-params">scrollArea</span>&#x27;)</span>,<br>  rootMargin: &#x27;<span class="hljs-number">0</span>px&#x27;,<br>  threshold: <span class="hljs-number">1.0</span><br>&#125;<br><br><span class="hljs-keyword">let</span> observer = <span class="hljs-keyword">new</span> <span class="hljs-constructor">IntersectionObserver(<span class="hljs-params">callback</span>, <span class="hljs-params">options</span>)</span>;<br></code></pre></td></tr></table></figure>
+<p>阈值为 1.0 意味着目标元素完全出现在 root 选项指定的元素中可见时，回调函数将会被执行。</p>
+<ol start="2">
+<li>Intersection observer options</li>
+</ol>
+<p>传递到 IntersectionObserver() 构造函数的 options 对象，允许您控制观察者的回调函数的被调用时的环境。它有以下字段：</p>
+<div class="note note-success">
+            <p>info</p>
+          </div>
+<p>指定根 (root) 元素，用于检查目标的可见性。必须是目标元素的父级元素。如果未指定或者为null，则默认为浏览器视窗。</p>
+<div class="note note-success">
+            <p>rootMargin</p>
+          </div>
+<p>根 (root) 元素的外边距。类似于 CSS 中的 margin 属性，比如 “10px 20px 30px 40px” (top、right、bottom、left)。如果有指定 root 参数，则 rootMargin 也可以使用百分比来取值。该属性值是用作 root 元素和 target 发生交集时候的计算交集的区域范围，使用该属性可以控制 root 元素每一边的收缩或者扩张。默认值为四个边距全是 0。</p>
+<div class="note note-success">
+            <p>threshold</p>
+          </div>
+<p>可以是单一的 number 也可以是 number 数组，target 元素和 root 元素相交程度达到该值的时候 IntersectionObserver 注册的回调函数将会被执行。如果你只是想要探测当 target 元素的在 root 元素中的可见性超过 50% 的时候，你可以指定该属性值为 0.5。如果你想要 target 元素在 root 元素的可见程度每多 25% 就执行一次回调，那么你可以指定一个数组 [0, 0.25, 0.5, 0.75, 1]。默认值是 0 (意味着只要有一个 target 像素出现在 root 元素中，回调函数将会被执行)。该值为 1.0 含义是当 target 完全出现在 root 元素中时候 回调才会被执行。</p>
+<ol start="3">
+<li>Targeting an element to be observed</li>
+</ol>
+<p>创建一个 observer 后需要给定一个目标元素进行观察。</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs aspectj">let <span class="hljs-keyword">target</span> = document.querySelector(<span class="hljs-string">&#x27;#listItem&#x27;</span>);<br>observer.observe(<span class="hljs-keyword">target</span>);<br></code></pre></td></tr></table></figure>
+<h3 id="实战Demo">实战Demo</h3>
+<p>大概了解了该 API 的语法以后，尝试写一个简单的 demo 还原一下公司产品的那种交互效果。</p>
+<p>html</p>
+<figure class="highlight dust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs dust"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;container&quot;</span> [<span class="hljs-attr">ngClass</span>]=<span class="hljs-string">&quot;</span></span></span><span class="hljs-template-variable">&#123;&#x27;fixed&#x27;: isFixed&#125;</span><span class="xml"><span class="hljs-tag"><span class="hljs-string">&quot;</span>&gt;</span></span><br><span class="xml">  <span class="hljs-tag">&lt;<span class="hljs-name">header</span>&gt;</span></span><br><span class="xml">    <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;title1&quot;</span>&gt;</span>目标元素可见<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span></span><br><span class="xml">    <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;title2&quot;</span>&gt;</span>目标元素消失啦<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span></span><br><span class="xml">  <span class="hljs-tag">&lt;/<span class="hljs-name">header</span>&gt;</span></span><br><span class="xml">  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> #<span class="hljs-attr">wraper</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;wraper&quot;</span>&gt;</span></span><br><span class="xml">    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;box&quot;</span> #<span class="hljs-attr">box</span>&gt;</span></span><br><span class="xml"></span><br><span class="xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="xml">    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;content&quot;</span>&gt;</span></span><br><span class="xml"></span><br><span class="xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="xml">  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br></code></pre></td></tr></table></figure>
+<p>scss</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-class">.container</span> &#123;<br>    <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#fff</span>;<br>    <span class="hljs-attribute">display</span>: flex;<br>    <span class="hljs-attribute">flex-direction</span>: column;<br>    <span class="hljs-attribute">position</span>: relative;<br><br>    <span class="hljs-selector-tag">header</span> &#123;<br>      <span class="hljs-attribute">height</span>: <span class="hljs-number">60px</span>;<br>      <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#aaa</span>;<br>      <span class="hljs-attribute">display</span>: flex;<br>      <span class="hljs-attribute">align-items</span>: center;<br><br>      <span class="hljs-selector-class">.title1</span> &#123;<br>        <span class="hljs-attribute">visibility</span>: visible;<br>        <span class="hljs-attribute">opacity</span>: <span class="hljs-number">1</span>;<br>        <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">0px</span>;<br>        <span class="hljs-attribute">transition</span>: <span class="hljs-number">400ms</span> ease-out;<br>        <span class="hljs-attribute">transition-property</span>: margin-top, opacity;<br>        <span class="hljs-attribute">position</span>: inherit;<br>        <span class="hljs-attribute">overflow</span>: hidden;<br>      &#125;<br><br>      <span class="hljs-selector-class">.title2</span> &#123;<br>        <span class="hljs-attribute">position</span>: absolute;<br>        <span class="hljs-attribute">opacity</span>: <span class="hljs-number">0</span>;<br>        <span class="hljs-attribute">visibility</span>: hidden;<br>        <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">32px</span>;<br>        <span class="hljs-attribute">transition</span>: <span class="hljs-number">400ms</span> ease-out;<br>        <span class="hljs-attribute">transition-property</span>: margin-top, opacity;<br>      &#125;<br>    &#125;<br><br>    <span class="hljs-selector-class">.wraper</span> &#123;<br>      <span class="hljs-attribute">height</span>: <span class="hljs-number">600px</span>;<br>      <span class="hljs-attribute">overflow</span>: auto;<br>      <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#eee</span>;<br><br>      <span class="hljs-selector-class">.box</span> &#123;<br>        <span class="hljs-attribute">width</span>: <span class="hljs-number">200px</span>;<br>        <span class="hljs-attribute">height</span>: <span class="hljs-number">100px</span>;<br>        <span class="hljs-attribute">background-color</span>: red;<br>      &#125;<br><br>      <span class="hljs-selector-class">.content</span> &#123;<br>        <span class="hljs-attribute">height</span>: <span class="hljs-number">1100px</span>;<br>      &#125;<br>    &#125;<br><br>    &amp;<span class="hljs-selector-class">.fixed</span> &#123;<br>      <span class="hljs-selector-tag">header</span> &#123;<br>        <span class="hljs-selector-class">.title1</span> &#123;<br>          <span class="hljs-attribute">opacity</span>: <span class="hljs-number">0</span>;<br>          <span class="hljs-attribute">margin-top</span>: -<span class="hljs-number">32px</span>;<br>          <span class="hljs-attribute">position</span>: absolute;<br>          <span class="hljs-attribute">pointer-events</span>: none;<br>        &#125;<br>  <br>        <span class="hljs-selector-class">.title2</span> &#123;<br>          <span class="hljs-attribute">display</span>: flex;<br>          <span class="hljs-attribute">opacity</span>: <span class="hljs-number">1</span>;<br>          <span class="hljs-attribute">visibility</span>: visible;<br>          <span class="hljs-attribute">position</span>: inherit;<br>          <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">0</span>;<br>        &#125;<br>      &#125;<br>    &#125;<br>  &#125;<br></code></pre></td></tr></table></figure>
+<p>ts</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@ViewChild(<span class="hljs-meta-string">&#x27;wraper&#x27;</span>, &#123; read: ElementRef &#125;)</span> body!: ElementRef;<br><br><span class="hljs-meta">@ViewChild(<span class="hljs-meta-string">&#x27;box&#x27;</span>, &#123; read: ElementRef &#125;)</span> box!: ElementRef;<br><br>isFixed: boolean = <span class="hljs-literal">false</span>;<br><br>ngAfterViewInit(): void &#123;<br>   <span class="hljs-keyword">const</span> options = &#123;<br>     root: <span class="hljs-keyword">this</span>.body.nativeElement,<br>     rootMargin: <span class="hljs-string">&#x27;0px&#x27;</span>,<br>     threshold: <span class="hljs-number">0.2</span>,<br>   &#125;;<br>   <span class="hljs-keyword">const</span> observer = new IntersectionObserver(<span class="hljs-keyword">this</span>.callback, options);<br>   observer.observe(<span class="hljs-keyword">this</span>.box.nativeElement);<br> &#125;<br><br> callback = (<span class="hljs-keyword">data</span>: IntersectionObserverEntry[]) =&gt; &#123;<br>   <span class="hljs-keyword">const</span> intersectionRatio = <span class="hljs-keyword">data</span>[<span class="hljs-number">0</span>]?.intersectionRatio;<br>     <span class="hljs-keyword">if</span> (intersectionRatio &lt; <span class="hljs-number">0.2</span>) &#123;<br>       <span class="hljs-keyword">this</span>.isFixed = <span class="hljs-literal">true</span>;<br>     &#125; <span class="hljs-keyword">else</span> &#123;<br>       <span class="hljs-keyword">this</span>.isFixed = <span class="hljs-literal">false</span>;<br>     &#125;<br> &#125;;<br></code></pre></td></tr></table></figure>
+<p>完结撒花🎉，最后看一下效果：</p>
+<p><img src="/img/intersection/2.gif" srcset="/img/loading.gif" lazyload alt=""></p>
+<h3 id="总结">总结</h3>
+<p>这里只是实现了个简单的交互效果，其实 Intersection observer API 的作用远不止于此，比如 还可以用来实现图片的懒加载、内容无限滚动等，感兴趣的可以去查看更详细的用法：<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#intersection_observer_concepts_and_usage">MDN-Intersection Observer API</a></p>
+<p>最后总结一下用到的知识点：</p>
+<ol>
+<li>Intersection observer API</li>
+<li>利用 css 的 transition、transition-property 属性</li>
+</ol>
+
             </div>
             <hr>
             <div>
               <div class="post-metas mb-3">
                 
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Javascript/">Javascript</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/js%E5%8E%9F%E7%94%9Fapi/">js原生api</a>
+                    
+                  </div>
                 
               </div>
               
