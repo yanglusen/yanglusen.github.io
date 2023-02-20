@@ -4,7 +4,32 @@
   
   
   <entry>
-    <title>学习- Notifications API</title>
+    <title>日常开发中那些不常用的css属性</title>
+    <link href="/posts/747db437/"/>
+    <url>/posts/747db437/</url>
+    
+    <content type="html"><![CDATA[<p>由于 css 属性的繁多和难学，本篇文章旨在记录平常开发中遇到的那些 css 属性，会长期更新记录。</p><p>【注】点击 css 的属性名称可以跳转到 MDN 链接，可查看更详细的用法。</p><div class="note note-success">            <ol><li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events">pointer-events</a></li></ol>          </div><p>pointer-events CSS 属性设置在什么情况下(如果有的话)一个特定的图形元素可以成为指针事件的目标。</p><p>通常和 opacity 属性和 cursor 属性搭配使用。</p><figure class="highlight css"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><pre><code class="hljs css"><span class="hljs-attribute">pointer-events</span>: none;<br><span class="hljs-attribute">cursor</span>: not-allowed;<br><span class="hljs-attribute">opacity</span>: .<span class="hljs-number">5</span>;<br></code></pre></td></tr></table></figure><p><img src="/img/normal-css/point-events-1.png" alt=""></p><div class="note note-success">            <ol start="2"><li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/filter">filter</a></li></ol>          </div><p>css 的 filter 属性可以用来实现网页的「默哀模式」,让整个网站变灰色。</p><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-tag">html</span> &#123;<br>  <span class="hljs-attribute">filter</span>: <span class="hljs-built_in">grayscale</span>(<span class="hljs-number">80%</span>);<br>&#125;<br></code></pre></td></tr></table></figure><div class="note note-success">            <ol start="2"><li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/filter">border-collapse</a></li></ol>          </div><p>设置 &lt; table &gt; 中的单元格是否具有共享边框或单独的边框。</p><p>border-collapse = separate  |  collapse</p><figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs maxima"><span class="hljs-built_in">border</span>-<span class="hljs-built_in">collapse</span>: <span class="hljs-built_in">collapse</span>;<br></code></pre></td></tr></table></figure><p><img src="/img/normal-css/collapse.png" alt=""></p><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-attribute">border-collapse</span>: separate;<br></code></pre></td></tr></table></figure><p><img src="/img/normal-css/separate.png" alt=""></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>CSS</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>CSS</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Javascript Notifications API</title>
     <link href="/posts/5a30c4fd/"/>
     <url>/posts/5a30c4fd/</url>
     
@@ -29,7 +54,7 @@
   
   
   <entry>
-    <title>学习JavaScript Intersection Observer API</title>
+    <title>JavaScript Intersection Observer API</title>
     <link href="/posts/4e1dac9a/"/>
     <url>/posts/4e1dac9a/</url>
     
@@ -160,7 +185,7 @@
   
   
   <entry>
-    <title>react学习笔记-基础语法</title>
+    <title>React学习笔记-基础语法</title>
     <link href="/posts/354b326f/"/>
     <url>/posts/354b326f/</url>
     
@@ -187,7 +212,7 @@
   
   
   <entry>
-    <title>angular中防抖的实现</title>
+    <title>Angular中防抖的实现</title>
     <link href="/posts/445dfd0e/"/>
     <url>/posts/445dfd0e/</url>
     
@@ -214,11 +239,11 @@
   
   
   <entry>
-    <title>如何在js中计算字符串的像素长度</title>
+    <title>Javascript Element.getBoundingClientRect API</title>
     <link href="/posts/b6e78c84/"/>
     <url>/posts/b6e78c84/</url>
     
-    <content type="html"><![CDATA[<p>关键点：利用Element.getBoundingClientRect()函数</p><span id="more"></span><h3 id="Element-getBoundingClientRect-介绍">Element.getBoundingClientRect() 介绍</h3><p>看一下mdn的解释：</p><blockquote><p>The Element.getBoundingClientRect() method returns a DOMRect object providing information about the size of an element and its position relative to the viewport.</p></blockquote><p>说的是这个函数会返回一个DOMRect对象，这个对象中会包含当前dom元素的一些信息，如相对于视窗的位置、宽高等。</p><p>需要注意的是这里返回的元素的宽高是包含元素的border-width和padding的，因为盒子默认的是标准盒模型（standard box），如果设置了box-sizing：border-box的话，则获取到的宽高只包含元素内容的宽高。</p><h4 id="DOMRect对象">DOMRect对象</h4><p>DOMRect对象描述了一个矩形的大小和位置，属性都是只读的。</p><p>通过mdn上的一个demo看一下都有哪些属性吧:</p><p>html</p><figure class="highlight apache"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs apache"><span class="hljs-section">&lt;div&gt;</span><span class="hljs-section">&lt;/div&gt;</span><br></code></pre></td></tr></table></figure><p>css</p><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-tag">div</span> &#123;<br>  <span class="hljs-attribute">width</span>: <span class="hljs-number">400px</span>;<br>  <span class="hljs-attribute">height</span>: <span class="hljs-number">200px</span>;<br>  <span class="hljs-attribute">background</span>: purple;<br>&#125;<br></code></pre></td></tr></table></figure><p>javascript</p><figure class="highlight qml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs qml"><span class="hljs-keyword">let</span> elem = <span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">&#x27;div&#x27;</span>);<br><span class="hljs-keyword">let</span> <span class="hljs-built_in">rect</span> = elem.getBoundingClientRect();<br><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> <span class="hljs-built_in">rect</span>) &#123;<br>  <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">rect</span>[key] !== <span class="hljs-string">&#x27;function&#x27;</span>) &#123;<br>    <span class="hljs-keyword">let</span> para = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;p&#x27;</span>);<br>    para.textContent  = <span class="hljs-string">`<span class="hljs-subst">$&#123; key &#125;</span> : <span class="hljs-subst">$&#123; rect[key] &#125;</span>`</span>;<br>    <span class="hljs-built_in">document</span>.body.appendChild(para);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure><p><a href="https://codepen.io/yanglusen/pen/YzEVGgq">传送门</a></p><p>运行结果如下：</p><p><img src="/img/calculate/result.png" alt=""></p><p>这里的width属性正是我们想要的元素的宽度。</p><p>这里解释下，代码里没有设置margin:8px,为什么会有8像素的margin呢，是以为codePen这个在线编辑器的body有默认的8px的margin。</p><h3 id="最终代码">最终代码</h3><p>其实知道了关键的方法代码也就出来了，如下这是ts的写法：</p><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 计算字符串的像素长度</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param </span>str 输入的字符串</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param </span>fontSize 字体大小</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns </span>输入字符串的像素长度</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> getTextWidth(str: <span class="hljs-built_in">string</span>,<span class="hljs-attr">fontSize</span>: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">number</span> &#123;<br> <span class="hljs-keyword">let</span> result = <span class="hljs-number">0</span>;<br> <span class="hljs-keyword">const</span> ele = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;div&#x27;</span>);<br> ele.style.position = <span class="hljs-string">&#x27;absolute&#x27;</span>;<br> ele.style.whiteSpace = <span class="hljs-string">&#x27;nowrap&#x27;</span>;<br> ele.style.fontSize = fontSize;<br> ele.style.fontFamily = <span class="hljs-string">&#x27;inherit&#x27;</span>;<br> ele.style.opacity = <span class="hljs-string">&#x27;0&#x27;</span>;<br> ele.innerText = str;<br> <span class="hljs-built_in">document</span>.body.append(ele);<br> result = ele.getBoundingClientRect().width;<br> <span class="hljs-built_in">document</span>.body.removeChild(ele);<br> <span class="hljs-keyword">return</span> result;<br>&#125;<br></code></pre></td></tr></table></figure><p>需要注意的是字符串的字体样式如fontFamily、fontSize等都会影响其宽度的，因为我的需求中字体都是Chrome默认的，只有大小会不同，所以单独把字体大小作为形参提了出来。</p><p>笔者水平有限，若有错误敬请指正，不明白的地方也可评论区留言交流~</p>]]></content>
+    <content type="html"><![CDATA[<p>日常开发中遇到一个需求是需要计算某个字符串的长度，用到了 Element.getBoundingClientRect() 方法。</p><span id="more"></span><h3 id="Element-getBoundingClientRect-介绍">Element.getBoundingClientRect() 介绍</h3><p>看一下mdn的解释：</p><blockquote><p>The Element.getBoundingClientRect() method returns a DOMRect object providing information about the size of an element and its position relative to the viewport.</p></blockquote><p>说的是这个函数会返回一个DOMRect对象，这个对象中会包含当前dom元素的一些信息，如相对于视窗的位置、宽高等。</p><p>需要注意的是这里返回的元素的宽高是包含元素的border-width和padding的，因为盒子默认的是标准盒模型（standard box），如果设置了box-sizing：border-box的话，则获取到的宽高只包含元素内容的宽高。</p><h4 id="DOMRect对象">DOMRect对象</h4><p>DOMRect对象描述了一个矩形的大小和位置，属性都是只读的。</p><p>通过mdn上的一个demo看一下都有哪些属性吧:</p><p>html</p><figure class="highlight apache"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs apache"><span class="hljs-section">&lt;div&gt;</span><span class="hljs-section">&lt;/div&gt;</span><br></code></pre></td></tr></table></figure><p>css</p><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-tag">div</span> &#123;<br>  <span class="hljs-attribute">width</span>: <span class="hljs-number">400px</span>;<br>  <span class="hljs-attribute">height</span>: <span class="hljs-number">200px</span>;<br>  <span class="hljs-attribute">background</span>: purple;<br>&#125;<br></code></pre></td></tr></table></figure><p>javascript</p><figure class="highlight qml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs qml"><span class="hljs-keyword">let</span> elem = <span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">&#x27;div&#x27;</span>);<br><span class="hljs-keyword">let</span> <span class="hljs-built_in">rect</span> = elem.getBoundingClientRect();<br><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> <span class="hljs-built_in">rect</span>) &#123;<br>  <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">rect</span>[key] !== <span class="hljs-string">&#x27;function&#x27;</span>) &#123;<br>    <span class="hljs-keyword">let</span> para = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;p&#x27;</span>);<br>    para.textContent  = <span class="hljs-string">`<span class="hljs-subst">$&#123; key &#125;</span> : <span class="hljs-subst">$&#123; rect[key] &#125;</span>`</span>;<br>    <span class="hljs-built_in">document</span>.body.appendChild(para);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure><p><a href="https://codepen.io/yanglusen/pen/YzEVGgq">传送门</a></p><p>运行结果如下：</p><p><img src="/img/calculate/result.png" alt=""></p><p>这里的width属性正是我们想要的元素的宽度。</p><p>这里解释下，代码里没有设置margin:8px,为什么会有8像素的margin呢，是以为codePen这个在线编辑器的body有默认的8px的margin。</p><h3 id="最终代码">最终代码</h3><p>其实知道了关键的方法代码也就出来了，如下这是ts的写法：</p><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 计算字符串的像素长度</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param </span>str 输入的字符串</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param </span>fontSize 字体大小</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns </span>输入字符串的像素长度</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> getTextWidth(str: <span class="hljs-built_in">string</span>,<span class="hljs-attr">fontSize</span>: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">number</span> &#123;<br> <span class="hljs-keyword">let</span> result = <span class="hljs-number">0</span>;<br> <span class="hljs-keyword">const</span> ele = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;div&#x27;</span>);<br> ele.style.position = <span class="hljs-string">&#x27;absolute&#x27;</span>;<br> ele.style.whiteSpace = <span class="hljs-string">&#x27;nowrap&#x27;</span>;<br> ele.style.fontSize = fontSize;<br> ele.style.fontFamily = <span class="hljs-string">&#x27;inherit&#x27;</span>;<br> ele.style.opacity = <span class="hljs-string">&#x27;0&#x27;</span>;<br> ele.innerText = str;<br> <span class="hljs-built_in">document</span>.body.append(ele);<br> result = ele.getBoundingClientRect().width;<br> <span class="hljs-built_in">document</span>.body.removeChild(ele);<br> <span class="hljs-keyword">return</span> result;<br>&#125;<br></code></pre></td></tr></table></figure><p>需要注意的是字符串的字体样式如fontFamily、fontSize等都会影响其宽度的，因为我的需求中字体都是Chrome默认的，只有大小会不同，所以单独把字体大小作为形参提了出来。</p><p>笔者水平有限，若有错误敬请指正，不明白的地方也可评论区留言交流~</p>]]></content>
     
     
     <categories>
@@ -239,7 +264,7 @@
   
   
   <entry>
-    <title>ng-zorro中实现两个table同步滚动效果</title>
+    <title>Ng-zorro中实现两个table同步滚动效果</title>
     <link href="/posts/1f09b34d/"/>
     <url>/posts/1f09b34d/</url>
     
