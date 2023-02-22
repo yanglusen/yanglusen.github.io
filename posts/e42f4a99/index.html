@@ -1,0 +1,582 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon/java-script.png">
+  <link rel="icon" href="/img/favicon/java-script.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="最近老是跟文件上传打交道，趁着搞完需求的间隙，整理一下拖了好久的文章，浅析 Angular 中的文件上传进度监控的原理。其主要的核心是利用了 XMLHttpRequest 和 Observable 对象来实现的。 源码 123456789101112131415161718&#x2F;**     * 上传单个文件     * @param uploadFile 上传文件对象     *&#x2F;    uploa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅析Angular中的文件上传进度监控">
+<meta property="og:url" content="http://example.com/posts/e42f4a99/index.html">
+<meta property="og:site_name" content="lusyn的个人博客">
+<meta property="og:description" content="最近老是跟文件上传打交道，趁着搞完需求的间隙，整理一下拖了好久的文章，浅析 Angular 中的文件上传进度监控的原理。其主要的核心是利用了 XMLHttpRequest 和 Observable 对象来实现的。 源码 123456789101112131415161718&#x2F;**     * 上传单个文件     * @param uploadFile 上传文件对象     *&#x2F;    uploa">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/angularTips/banner.jpeg">
+<meta property="article:published_time" content="2023-02-20T08:47:53.000Z">
+<meta property="article:modified_time" content="2023-02-22T09:14:44.801Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="angular">
+<meta property="article:tag" content="文件上传">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/angularTips/banner.jpeg">
+  
+  
+  <title>浅析Angular中的文件上传进度监控 - lusyn的个人博客</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"4O7xXAyuJNkrA2PqGrxb2pU2-gzGzoHsz","app_key":"VXUTG57CUUzVDSrp4x9jKPsq","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>lusyn的个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/angularTips/banner.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="浅析Angular中的文件上传进度监控">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-02-20 16:47" pubdate>
+        2023年2月20日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      50 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">浅析Angular中的文件上传进度监控</h1>
+            
+            <div class="markdown-body">
+              <p>最近老是跟文件上传打交道，趁着搞完需求的间隙，整理一下拖了好久的文章，浅析 Angular 中的文件上传进度监控的原理。其主要的核心是利用了 XMLHttpRequest 和 Observable 对象来实现的。</p>
+<h3 id="源码">源码</h3>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></div></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 上传单个文件</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> uploadFile 上传文件对象</span><br><span class="hljs-comment">     */</span><br>    upload(uploadFile: ThyUploadFile): Observable&lt;ThyUploadResponse&gt; &#123;<br>        <span class="hljs-keyword">this</span>.ensureFileName(uploadFile);<br><br>        <span class="hljs-keyword">return</span> new Observable(observer =&gt; &#123;<br>            <span class="hljs-keyword">const</span> &#123; xhr, cleanup &#125; = <span class="hljs-keyword">this</span>.uploadByXhr(observer, uploadFile);<br>            <span class="hljs-keyword">return</span> () =&gt; &#123;<br>                cleanup();<br><br>                <span class="hljs-keyword">if</span> (xhr.readyState !== xhr.DONE) &#123;<br>                    xhr.abort();<br>                &#125;<br>            &#125;;<br>        &#125;);<br>    &#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-title">uploadByXhr</span>(<span class="hljs-params">observer: Subscriber&lt;ThyUploadResponse&gt;, uploadFile: ThyUploadFile</span>)</span> &#123;<br>        <span class="hljs-comment">// 注入 XhrFactory,调用其 build() 方法，返回 XMLHttpRequest 对象</span><br>        <span class="hljs-keyword">const</span> xhr = <span class="hljs-built_in">this</span>.xhrFactory.build();<br>        <span class="hljs-keyword">const</span> time: <span class="hljs-built_in">number</span> = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().getTime();<br>        <span class="hljs-keyword">let</span> speed = <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">let</span> estimatedTime: <span class="hljs-built_in">number</span> | <span class="hljs-literal">null</span> = <span class="hljs-literal">null</span>;<br><br>        uploadFile.progress = &#123;<br>            <span class="hljs-attr">status</span>: ThyUploadStatus.started,<br>            <span class="hljs-attr">percentage</span>: <span class="hljs-number">0</span>,<br>            <span class="hljs-attr">startTime</span>: time<br>        &#125;;<br><br>        <span class="hljs-keyword">const</span> onProgress = (event: ProgressEvent): <span class="hljs-function"><span class="hljs-params">void</span> =&gt;</span> &#123;<br>            <span class="hljs-keyword">if</span> (event.lengthComputable) &#123;<br>                <span class="hljs-keyword">let</span> percentage = <span class="hljs-built_in">Math</span>.round((event.loaded * <span class="hljs-number">100</span>) / event.total);<br>                <span class="hljs-keyword">if</span> (percentage === <span class="hljs-number">100</span>) &#123;<br>                    percentage = <span class="hljs-number">99</span>;<br>                &#125;<br>                <span class="hljs-keyword">const</span> diff = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().getTime() - time;<br>                speed = <span class="hljs-built_in">Math</span>.round((event.loaded / diff) * <span class="hljs-number">1000</span>);<br>                <span class="hljs-keyword">const</span> progressStartTime = (uploadFile.progress &amp;&amp; uploadFile.progress.startTime) || <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().getTime();<br>                estimatedTime = <span class="hljs-built_in">Math</span>.ceil((event.total - event.loaded) / speed);<br><br>                uploadFile.progress.status = ThyUploadStatus.uploading;<br>                uploadFile.progress.percentage = percentage;<br>                uploadFile.progress.speed = speed;<br>                uploadFile.progress.speedHuman = <span class="hljs-string">`<span class="hljs-subst">$&#123;humanizeBytes(speed, <span class="hljs-literal">false</span>, <span class="hljs-number">2</span>)&#125;</span>/s`</span>;<br>                uploadFile.progress.startTime = progressStartTime;<br>                uploadFile.progress.estimatedTime = estimatedTime;<br>                uploadFile.progress.estimatedTimeHuman = <span class="hljs-built_in">this</span>.secondsToHuman(estimatedTime);<br><br>                observer.next(&#123; <span class="hljs-attr">status</span>: ThyUploadStatus.uploading, <span class="hljs-attr">uploadFile</span>: uploadFile &#125;);<br>            &#125;<br>        &#125;;<br><br>        <span class="hljs-keyword">const</span> onError = <span class="hljs-function">(<span class="hljs-params">error: ErrorEvent</span>) =&gt;</span> observer.error(error);<br><br>        <span class="hljs-keyword">const</span> onReadyStateChange = <span class="hljs-function">() =&gt;</span> &#123;<br>            <span class="hljs-keyword">if</span> (xhr.readyState === XMLHttpRequest.DONE) &#123;<br>                <span class="hljs-keyword">const</span> speedTime = (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().getTime() - uploadFile.progress.startTime) * <span class="hljs-number">1000</span>;<br>                <span class="hljs-keyword">const</span> speedAverage = <span class="hljs-built_in">Math</span>.round(uploadFile.nativeFile.size / speedTime);<br><br>                uploadFile.progress.status = ThyUploadStatus.done;<br>                uploadFile.progress.percentage = <span class="hljs-number">100</span>;<br>                uploadFile.progress.speed = speedAverage;<br>                uploadFile.progress.speedHuman = <span class="hljs-string">`<span class="hljs-subst">$&#123;humanizeBytes(speed, <span class="hljs-literal">false</span>, <span class="hljs-number">2</span>)&#125;</span>/s`</span>;<br>                uploadFile.progress.estimatedTime = estimatedTime;<br>                uploadFile.progress.estimatedTimeHuman = <span class="hljs-built_in">this</span>.secondsToHuman(estimatedTime || <span class="hljs-number">0</span>);<br><br>                uploadFile.responseStatus = xhr.status;<br><br>                <span class="hljs-keyword">try</span> &#123;<br>                    uploadFile.response = <span class="hljs-built_in">JSON</span>.parse(xhr.response);<br>                &#125; <span class="hljs-keyword">catch</span> (e) &#123;<br>                    uploadFile.response = xhr.response;<br>                &#125;<br><br>                <span class="hljs-comment">// file.responseHeaders = this.parseResponseHeaders(xhr.getAllResponseHeaders());</span><br><br>                observer.next(&#123; <span class="hljs-attr">status</span>: ThyUploadStatus.done, <span class="hljs-attr">uploadFile</span>: uploadFile &#125;);<br><br>                observer.complete();<br>            &#125;<br>        &#125;;<br><br>        xhr.upload.addEventListener(<span class="hljs-string">&#x27;progress&#x27;</span>, onProgress, <span class="hljs-literal">false</span>);<br>        xhr.upload.addEventListener(<span class="hljs-string">&#x27;error&#x27;</span>, onError);<br>        <span class="hljs-comment">// When using the [timeout attribute](https://xhr.spec.whatwg.org/#the-timeout-attribute) and an XHR</span><br>        <span class="hljs-comment">// request times out, browsers trigger the `timeout` event (and executes the XHR&#x27;s `ontimeout`</span><br>        <span class="hljs-comment">// callback). Additionally, Safari 9 handles timed-out requests in the same way, even if no `timeout`</span><br>        <span class="hljs-comment">// has been explicitly set on the XHR.</span><br>        xhr.upload.addEventListener(<span class="hljs-string">&#x27;timeout&#x27;</span>, onError);<br>        xhr.addEventListener(<span class="hljs-string">&#x27;timeout&#x27;</span>, onError);<br>        xhr.addEventListener(<span class="hljs-string">&#x27;readystatechange&#x27;</span>, onReadyStateChange);<br><br>        xhr.open(uploadFile.method, uploadFile.url, <span class="hljs-literal">true</span>);<br>        xhr.withCredentials = uploadFile.withCredentials ? <span class="hljs-literal">true</span> : <span class="hljs-literal">false</span>;<br><br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-keyword">const</span> formData = <span class="hljs-keyword">new</span> FormData();<br><br>            <span class="hljs-built_in">Object</span>.keys(uploadFile.data || &#123;&#125;).forEach(<span class="hljs-function"><span class="hljs-params">key</span> =&gt;</span> formData.append(key, uploadFile.data[key]));<br>            <span class="hljs-built_in">Object</span>.keys(uploadFile.headers || &#123;&#125;).forEach(<span class="hljs-function"><span class="hljs-params">key</span> =&gt;</span> xhr.setRequestHeader(key, uploadFile.headers[key]));<br><br>            formData.append(uploadFile.fileField || <span class="hljs-string">&#x27;file&#x27;</span>, uploadFile.nativeFile, uploadFile.fileName);<br><br>            observer.next(&#123; <span class="hljs-attr">status</span>: ThyUploadStatus.started, <span class="hljs-attr">uploadFile</span>: uploadFile &#125;);<br>            xhr.send(formData);<br>        &#125; <span class="hljs-keyword">catch</span> (error) &#123;<br>            observer.error(error);<br>        &#125;<br><br>        <span class="hljs-keyword">return</span> &#123;<br>            xhr,<br>            <span class="hljs-attr">cleanup</span>: <span class="hljs-function">() =&gt;</span> &#123;<br>                xhr.upload.removeEventListener(<span class="hljs-string">&#x27;progress&#x27;</span>, onProgress);<br>                xhr.upload.removeEventListener(<span class="hljs-string">&#x27;error&#x27;</span>, onError);<br>                xhr.upload.removeEventListener(<span class="hljs-string">&#x27;timeout&#x27;</span>, onError);<br>                xhr.removeEventListener(<span class="hljs-string">&#x27;timeout&#x27;</span>, onError);<br>                xhr.removeEventListener(<span class="hljs-string">&#x27;readystatechange&#x27;</span>, onReadyStateChange);<br>            &#125;<br>        &#125;;<br>    &#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-keyword">private</span> ensure<span class="hljs-constructor">FileName(<span class="hljs-params">uploadFile</span>: ThyUploadFile)</span> &#123;<br>    uploadFile.fileName = uploadFile.fileName<span class="hljs-operator"> || </span>uploadFile.nativeFile.name;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="分析">分析</h3>
+<p>代码看着挺长的，但是其逻辑不难，核心点就两个部分。</p>
+<ol>
+<li>
+<p>upload 方法返回了一个 ThyUploadResponse 类型的 Observable 可观察对象， 其构造函数传入一个 observer（观察者/订阅者），return了一个 unsubscribe 函数，用于取消订阅。</p>
+</li>
+<li>
+<p>重点是创建 Observable 时的回调函数，它里面调用了最关键的 uploadByXhr(observer, uploadFile) 方法，其中把观察者 observer 和 文件详情对象 uploadFile 作为参数传了进去。</p>
+<ul>
+<li>
+<p>注入 XhrFactory 服务，调用 build() 函数获取 XMLHttpRequest 对象</p>
+</li>
+<li>
+<p>定义了 progress、error、readystatechange 事件的回调函数</p>
+</li>
+<li>
+<p>调用 open() 实例化方法来创建一个新的请求</p>
+</li>
+<li>
+<p>调用 send() 实例化方法来发送 HTTP 请求，数据体为 FormData 类型</p>
+</li>
+<li>
+<p>最后 return 出去一个包含 XMLHttpRequest 对象和一个用于取消监听的函数</p>
+</li>
+</ul>
+</li>
+<li>
+<p>最后看一下 upload() 函数中 return 的 unsubscribe 函数中都干了些啥？</p>
+<ul>
+<li>
+<p>调用 cleanup() 函数，用于取消各种 upload 时的监听事件</p>
+</li>
+<li>
+<p>当 xhr.readyState !== xhr.DONE 时，执行 xhr.abort() 函数，abort() 函数的作用是取消 http 请求，用作取消上传。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>progress 事件会在请求接收到数据的时候被周期性触发，ProgressEvent.loaded 只读属性是一个整数，表示底层的进程已经执行的工作量，可以使用该属性和 ProgressEvent.total 计算完成工作的比率。</p>
+</li>
+</ol>
+<h3 id="与上传有关的类">与上传有关的类</h3>
+<p>上述分析中简单的涉及了一些类和函数，下面来系统的看一下。</p>
+<h4 id="XMLHttpRequest">XMLHttpRequest</h4>
+<p>其实例方法、事件比较多，可参考：<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest">使用XMLHttpRequest</a></p>
+<h4 id="ProgressEvent">ProgressEvent</h4>
+<p>ProgressEvent 接口是测量如 HTTP 请求（一个XMLHttpRequest，或者一个 img，audio，video，style 或 link 等底层资源的加载）等底层流程进度的事件。</p>
+<h5 id="实例属性">实例属性</h5>
+<p><em>lengthComputable</em><br>
+ProgressEvent.lengthComputable 只读属性是一个布尔Boolean (en-US) 标志，表示ProgressEvent 所关联的资源是否具有可以计算的长度。</p>
+<p><em>loaded</em><br>
+ProgressEvent.loaded 只读属性是一个整数，表示底层的进程已经执行的工作量。</p>
+<p><em>total</em><br>
+是一个无符号 64 位整数值，表明正在处理或者传输的数据的总大小。</p>
+<h4 id="FormData">FormData</h4>
+<p>FormData 接口提供了一种表示表单数据的键值对 key/value 的构造方式，并且可以轻松的将数据通过XMLHttpRequest.send() 方法发送出去，本接口和此方法都相当简单直接。如果送出时的编码类型被设为 “multipart/form-data”，它会使用和表单一样的格式。</p>
+<h5 id="实例方法">实例方法</h5>
+<p><em>append()</em><br>
+添加一个新值到 FormData 对象内的一个已存在的键中，如果键不存在则会添加该键。</p>
+<p><em>set()</em><br>
+对 FormData 对象里的某个 key 设置一个新的值，如果该 key 不存在，则添加。</p>
+<p>set() 和 FormData.append 不同之处在于：如果某个 key 已经存在，set() 会直接覆盖所有该 key 对应的值，而 FormData.append 则是在该 key 的最后位置再追加一个值。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Angular/">Angular</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/angular/">angular</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">文件上传</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/747db437/">
+                        <span class="hidden-mobile">日常开发中那些不常用的css属性</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"4O7xXAyuJNkrA2PqGrxb2pU2-gzGzoHsz","appKey":"VXUTG57CUUzVDSrp4x9jKPsq","path":"window.location.pathname","placeholder":"请发表有价值的评论，博客评论不欢迎灌水，良好的氛围需要大家一起维护。","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          Fluid.plugins.initFancyBox('#valine .vcontent img:not(.vemoji)');
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
