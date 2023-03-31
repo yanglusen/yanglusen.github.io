@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>关于 nth-of-type 伪类的使用误区</title>
+    <link href="/posts/36c83dfd/"/>
+    <url>/posts/36c83dfd/</url>
+    
+    <content type="html"><![CDATA[<p>在修复一个关于样式的缺陷时，发现是由于使用 nth-of-type 不当引起的。</p><p>MDN文档上的定义如下：</p><p>The <strong><code>:nth-of-type()</code></strong> CSS pseudo-class matches elements based on their position among siblings of the same type (<font color="#ff0000">tag name</font>).</p><p>即此伪类匹配兄弟节点之间类型相同的元素，括号里还特意解释了这里”类型相同“指的是标签名称。</p><p>所以说 nth-of-type 并不是 nth-of-class，不能通过类名去匹配。但是如果使用了类名会发生什么呢？看一下下面的代码：</p><figure class="highlight css"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-class">.no-padding-right</span><span class="hljs-selector-pseudo">:nth-of-type</span>(odd) &#123;<br>  <span class="hljs-attribute">color</span>: red;<br>&#125;<br><span class="hljs-selector-class">.no-padding-right</span><span class="hljs-selector-pseudo">:nth-of-type</span>(even) &#123;<br>  <span class="hljs-attribute">color</span>: green;<br>&#125;<br></code></pre></td></tr></table></figure><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;no-padding-right&quot;</span>&gt;</span>内容1<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>内容2<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;no-padding-right&quot;</span>&gt;</span>内容3<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;no-padding-right&quot;</span>&gt;</span>内容4<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;no-padding-right&quot;</span>&gt;</span>内容5<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;no-padding-right&quot;</span>&gt;</span>内容6<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br></code></pre></td></tr></table></figure><p>在上述代码中，原本的目的是想根据 .no-padding-right 来计算奇偶，也就是说想忽略掉没有 .no-padding-right 类的 div元素,让“内容3”所在的 div 变成偶数行，从而使其文字的颜色变成绿色。</p><p>上面一开始就说了这样肯定是不行的，那么看一下效果吧</p><p><img src="/img/nth-of-type/1.png" alt=""></p><p>可以看到选择器还是把第三行当成了奇数行。匹配的过程如下：</p><ol><li>先根据类名去找到其所在的元素标签名，比如 .no-padding-right 所在的元素标签名是 div</li><li>那么再利用 nth-of-type() 来计算奇偶的时候，其实还是根据标签名 div 来算的，并不是根据类名</li><li>第二行虽然不符合 .no-padding-right 匹配条件，但是不影响计算奇偶，所以第三行依旧是奇数，且符合匹配条件</li></ol><p>需要注意下此选择器的用法，希望以后能出一个 nth-of-class 选择器！</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>CSS</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>CSS</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>浅析Angular中的文件上传进度监控</title>
     <link href="/posts/e42f4a99/"/>
     <url>/posts/e42f4a99/</url>
@@ -275,7 +300,7 @@
     
     <categories>
       
-      <category>JavaScript</category>
+      <category>Javascript</category>
       
     </categories>
     
