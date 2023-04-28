@@ -1,0 +1,575 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon/java-script.png">
+  <link rel="icon" href="/img/favicon/java-script.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Angular 中创建动态组件主要有两种方式：ViewContainerRef 创建动态组件和使用 Angular CDK 动态创建。这里总结记录一下平常开发中常用的使用 ViewContainerRef 创建组件。 写在前面 自从 Ng15 版本更新以后，「独立组件」变成稳定版了，于是体验了一下，发现对于日常写一个小的 Ng 的 demo 是真的友好，不需要再导入 module 中了。  创建独">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular中的动态创建组件">
+<meta property="og:url" content="http://example.com/posts/a25ce8ce/index.html">
+<meta property="og:site_name" content="lusyn的个人博客">
+<meta property="og:description" content="Angular 中创建动态组件主要有两种方式：ViewContainerRef 创建动态组件和使用 Angular CDK 动态创建。这里总结记录一下平常开发中常用的使用 ViewContainerRef 创建组件。 写在前面 自从 Ng15 版本更新以后，「独立组件」变成稳定版了，于是体验了一下，发现对于日常写一个小的 Ng 的 demo 是真的友好，不需要再导入 module 中了。  创建独">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/dynamic-component/banner.jpeg">
+<meta property="article:published_time" content="2023-04-28T09:14:07.000Z">
+<meta property="article:modified_time" content="2023-04-28T10:29:55.085Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="动态组件">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/dynamic-component/banner.jpeg">
+  
+  
+  <title>Angular中的动态创建组件 - lusyn的个人博客</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"4O7xXAyuJNkrA2PqGrxb2pU2-gzGzoHsz","app_key":"VXUTG57CUUzVDSrp4x9jKPsq","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>lusyn的个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/dynamic-component/banner.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Angular中的动态创建组件">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-04-28 17:14" pubdate>
+        2023年4月28日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      34 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Angular中的动态创建组件</h1>
+            
+            <div class="markdown-body">
+              <p>Angular 中创建动态组件主要有两种方式：ViewContainerRef 创建动态组件和使用 Angular CDK 动态创建。这里总结记录一下平常开发中常用的使用 ViewContainerRef 创建组件。</p>
+<h3 id="写在前面">写在前面</h3>
+<p>自从 Ng15 版本更新以后，「独立组件」变成稳定版了，于是体验了一下，发现对于日常写一个小的 Ng 的 demo 是真的友好，不需要再导入 module 中了。</p>
+<ol>
+<li>创建独立组件、指令的 cli 命令</li>
+</ol>
+<figure class="highlight vhdl"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs vhdl">ng g <span class="hljs-keyword">component</span> <span class="hljs-comment">--standalone</span><br></code></pre></td></tr></table></figure>
+<ol start="2">
+<li>项目可以独立引导一个组件启动</li>
+</ol>
+<p>main.ts</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs clean"><span class="hljs-keyword">import</span> &#123; enableProdMode &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@angular/core&#x27;</span>;<br><span class="hljs-keyword">import</span> &#123; bootstrapApplication &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@angular/platform-browser&#x27;</span>;<br><span class="hljs-keyword">import</span> &#123; AppComponent &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./app/app.component&#x27;</span>;<br><br><span class="hljs-keyword">import</span> &#123; environment &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./environments/environment&#x27;</span>;<br><br><span class="hljs-keyword">if</span> (environment.production) &#123;<br>  enableProdMode();<br>&#125;<br><span class="hljs-comment">// 使用 bootstrapApplication API</span><br>bootstrapApplication(AppComponent)<br></code></pre></td></tr></table></figure>
+<h3 id="ViewContainerRef-动态创建组件、模板">ViewContainerRef 动态创建组件、模板</h3>
+<p>ViewContainerRef 表示可以将一个或多个视图附着到组件中的容器。</p>
+<p>官网更详细解释：<a target="_blank" rel="noopener" href="https://angular.cn/api/core/ViewContainerRef">ViewContainerRef</a></p>
+<p>常用的方法：</p>
+<ol>
+<li>createComponent()</li>
+</ol>
+<p>实例化一个 Component 并把它的宿主视图插入到本容器的指定 index 处。</p>
+<p>返回值：包含组件实例和宿主视图的新 ComponentRef 。</p>
+<ol start="2">
+<li>createEmbeddedView()</li>
+</ol>
+<p>实例化一个内嵌视图，并把它插入到该容器中。</p>
+<p>返回值：新创建的视图的 ViewRef 实例。</p>
+<ol start="3">
+<li>clear()</li>
+</ol>
+<p>销毁本容器中的所有视图。</p>
+<p>Demo:</p>
+<p>html</p>
+<figure class="highlight handlebars"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> (<span class="hljs-attr">click</span>)=<span class="hljs-string">&quot;createComponent()&quot;</span>&gt;</span>Angular 动态创建组件<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> (<span class="hljs-attr">click</span>)=<span class="hljs-string">&quot;createTemplate(template)&quot;</span>&gt;</span>Angular 动态创建模板<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ng-template</span> #<span class="hljs-attr">inputTemplate</span> <span class="hljs-attr">let-default</span> <span class="hljs-attr">let-title</span>=<span class="hljs-string">&quot;title&quot;</span> <span class="hljs-attr">let-desc</span>=<span class="hljs-string">&quot;desc&quot;</span>&gt;</span></span><br><span class="xml">  This is inputTemplate!</span><br><span class="xml">  <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>default: </span><span class="hljs-template-variable">&#123;&#123;<span class="hljs-name">default</span>&#125;&#125;</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span><br><span class="xml">  <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>title: </span><span class="hljs-template-variable">&#123;&#123;<span class="hljs-name">title</span>&#125;&#125;</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span><br><span class="xml">  <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>desc: </span><span class="hljs-template-variable">&#123;&#123;<span class="hljs-name">desc</span>&#125;&#125;</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span><br><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">ng-template</span>&gt;</span></span><br><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ng-container</span> #<span class="hljs-attr">container</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">ng-container</span>&gt;</span></span><br><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ng-template</span> #<span class="hljs-attr">template</span>&gt;</span></span><br><span class="xml">  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>这是Template<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">ng-template</span>&gt;</span></span><br></code></pre></td></tr></table></figure>
+<p>ts</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-meta">@ViewChild</span>(<span class="hljs-string">&#x27;container&#x27;</span>, &#123; <span class="hljs-attr">read</span>: ViewContainerRef &#125;) container!: ViewContainerRef;<br> title = <span class="hljs-string">&#x27;standalone-component&#x27;</span>;<br> condition: <span class="hljs-built_in">boolean</span> = <span class="hljs-literal">false</span>;<br> <span class="hljs-function"><span class="hljs-title">createComponent</span>(<span class="hljs-params"></span>)</span> &#123;<br>   <span class="hljs-built_in">this</span>.container.clear();<br>   <span class="hljs-keyword">const</span> componentRef = <span class="hljs-built_in">this</span>.container.createComponent(ComponentAComponent);<br>   componentRef.instance.title = <span class="hljs-string">&#x27;这是组件A！&#x27;</span>;<br>   componentRef.instance.desc = <span class="hljs-string">&#x27;这是组件A的描述&#x27;</span>;<br>   <span class="hljs-built_in">console</span>.log(componentRef);<br> &#125;<br> <span class="hljs-function"><span class="hljs-title">createTemplate</span>(<span class="hljs-params">template: TemplateRef&lt;<span class="hljs-built_in">any</span>&gt;</span>)</span> &#123;<br>   <span class="hljs-built_in">this</span>.container.clear();<br>   <span class="hljs-keyword">const</span> templateRef = <span class="hljs-built_in">this</span>.container.createEmbeddedView(template);<br>   <span class="hljs-built_in">console</span>.log(templateRef);<br> &#125;<br></code></pre></td></tr></table></figure>
+<p><img src="/img/dynamic-component/pic1.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h3 id="ngTemplateOutlet-指令">ngTemplateOutlet 指令</h3>
+<p>根据一个提前备好的 TemplateRef 插入一个内嵌视图。</p>
+<p>使用场景：</p>
+<ol>
+<li>
+<p>复用组件中的视图</p>
+</li>
+<li>
+<p>自定义组件，使其有更大的扩展性</p>
+</li>
+</ol>
+<p>两种用法：*ngTemplateOutlet [ngTemplateOutlet]</p>
+<p>写法虽然不一样，但是作用完全相同，看各人喜好和习惯</p>
+<p>子组件如果有传入的自定义模板，则使用自定义模板，否则使用默认模板：</p>
+<p>子组件：</p>
+<p>html</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">ng-container</span> *<span class="hljs-attr">ngTemplateOutlet</span>=<span class="hljs-string">&quot;inputTemplate ? inputTemplate : defaultTemplate;context: context&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">ng-container</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">ng-container</span> [<span class="hljs-attr">ngTemplateOutlet</span>]=<span class="hljs-string">&quot;inputTemplate ? inputTemplate : defaultTemplate&quot;</span> [<span class="hljs-attr">ngTemplateOutletContext</span>]=<span class="hljs-string">&quot;context&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">ng-container</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">ng-template</span> #<span class="hljs-attr">defaultTemplate</span>&gt;</span><br>    This is defaultTemplate!<br><span class="hljs-tag">&lt;/<span class="hljs-name">ng-template</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>ts</p>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs oxygene">import <span class="hljs-comment">&#123; CommonModule &#125;</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@angular/common&#x27;</span>;<br>import <span class="hljs-comment">&#123; Component, Input, OnInit, TemplateRef &#125;</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@angular/core&#x27;</span>;<br><br>@Component(<span class="hljs-comment">&#123;</span><br><span class="hljs-comment">  standalone: true,</span><br><span class="hljs-comment">  selector: &#x27;app-component-a&#x27;,</span><br><span class="hljs-comment">  templateUrl: &#x27;./component-a.component.html&#x27;,</span><br><span class="hljs-comment">  imports: [CommonModule],</span><br><span class="hljs-comment">&#125;</span>)<br>export <span class="hljs-keyword">class</span> ComponentAComponent <span class="hljs-keyword">implements</span> OnInit <span class="hljs-comment">&#123;</span><br><span class="hljs-comment">  context = &#123;</span><br><span class="hljs-comment">    $implicit: &#x27;默认值&#x27;,</span><br><span class="hljs-comment">    title: &#x27;Title-a&#x27;,</span><br><span class="hljs-comment">    desc: &#x27;Desc-a&#x27;</span><br><span class="hljs-comment">  &#125;</span><br>  @Input()<br>  inputTemplate?: TemplateRef&lt;any&gt;;<br>  <span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">()</span> <span class="hljs-comment">&#123; &#125;</span></span><br><span class="hljs-function"></span><br><span class="hljs-function">  <span class="hljs-title">ngOnInit</span><span class="hljs-params">()</span>:</span> void <span class="hljs-comment">&#123;&#125;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>context 为传入模板的上下文对象，在上下文对象中使用  $implicit  这个 key 会把对应的值设置为默认值</p>
+<p>父组件：</p>
+<figure class="highlight handlebars"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">app-component-a</span> [<span class="hljs-attr">inputTemplate</span>]=<span class="hljs-string">&quot;inputTemplate&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">app-component-a</span>&gt;</span></span><br><span class="xml"></span><br><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ng-template</span> #<span class="hljs-attr">inputTemplate</span> <span class="hljs-attr">let-default</span> <span class="hljs-attr">let-title</span>=<span class="hljs-string">&quot;title&quot;</span> <span class="hljs-attr">let-desc</span>=<span class="hljs-string">&quot;desc&quot;</span>&gt;</span></span><br><span class="xml">  This is inputTemplate!</span><br><span class="xml">  <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>default: </span><span class="hljs-template-variable">&#123;&#123;<span class="hljs-name">default</span>&#125;&#125;</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span><br><span class="xml">  <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>title: </span><span class="hljs-template-variable">&#123;&#123;<span class="hljs-name">title</span>&#125;&#125;</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span><br><span class="xml">  <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>desc: </span><span class="hljs-template-variable">&#123;&#123;<span class="hljs-name">desc</span>&#125;&#125;</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span><br><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">ng-template</span>&gt;</span></span><br></code></pre></td></tr></table></figure>
+<h3 id="ngComponentOutlet">ngComponentOutlet</h3>
+<p>实例化单个 Component 类型，并将其宿主视图插入当前视图。NgComponentOutlet 为动态组件创建提供了一种声明式方法。</p>
+<p>html</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">ng-container</span> *<span class="hljs-attr">ngComponentOutlet</span>=<span class="hljs-string">&quot;component&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">ng-container</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>ts</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs gradle">component?: <span class="hljs-keyword">any</span>;<br><br>ngOnInit(): <span class="hljs-keyword">void</span> &#123;<br>   <span class="hljs-keyword">this</span>.component = ComponentAComponent<br> &#125;<br></code></pre></td></tr></table></figure>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Angular/">Angular</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%8A%A8%E6%80%81%E7%BB%84%E4%BB%B6/">动态组件</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/36c83dfd/">
+                        <span class="hidden-mobile">关于 nth-of-type 伪类的使用误区</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"4O7xXAyuJNkrA2PqGrxb2pU2-gzGzoHsz","appKey":"VXUTG57CUUzVDSrp4x9jKPsq","path":"window.location.pathname","placeholder":"请发表有价值的评论，博客评论不欢迎灌水，良好的氛围需要大家一起维护。","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          Fluid.plugins.initFancyBox('#valine .vcontent img:not(.vemoji)');
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
